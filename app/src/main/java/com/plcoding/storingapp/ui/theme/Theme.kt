@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2.ui.theme
+package com.plcoding.storingapp.ui.theme
 
 import android.app.Activity
 import android.os.Build

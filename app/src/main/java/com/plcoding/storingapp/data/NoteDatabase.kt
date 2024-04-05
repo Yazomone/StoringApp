@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2.data
+package com.plcoding.storingapp.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

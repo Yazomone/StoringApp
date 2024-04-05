@@ -1,10 +1,10 @@
-package com.plcoding.roomtest2.presentation
+package com.plcoding.storingapp.presentation
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plcoding.roomtest2.data.Note
-import com.plcoding.roomtest2.data.NoteDao
+import com.plcoding.storingapp.data.Note
+import com.plcoding.storingapp.data.NoteDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

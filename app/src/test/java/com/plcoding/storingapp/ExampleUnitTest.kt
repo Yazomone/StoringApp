@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2
+package com.plcoding.storingapp
 
 import org.junit.Test
 

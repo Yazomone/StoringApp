@@ -1,11 +1,8 @@
-package com.plcoding.roomtest2.presentation
+package com.plcoding.storingapp.presentation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.plcoding.roomtest2.data.Note
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.plcoding.storingapp.data.Note
 
 data class NotesState(
     val notes: List<Note> = emptyList(),

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.plcoding.roomtest2"
+    namespace = "com.plcoding.storingapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.plcoding.roomtest2"
+        applicationId = "com.plcoding.storingapp"
         minSdk = 34
         targetSdk = 34
         versionCode = 1

@@ -1,7 +1,6 @@
-package com.plcoding.roomtest2
+package com.plcoding.storingapp
 
 import android.os.Bundle
-import android.view.ViewPropertyAnimator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,13 +16,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.plcoding.roomtest2.data.NotesDatabase
-import com.plcoding.roomtest2.presentation.AddNoteScreen
-import com.plcoding.roomtest2.presentation.NotesScreen
-import com.plcoding.roomtest2.presentation.NotesViewModel
-import com.plcoding.roomtest2.presentation.SearchScreen
-import com.plcoding.roomtest2.presentation.UpdateDataScreen
-import com.plcoding.roomtest2.ui.theme.Roomtest2Theme
+import com.plcoding.storingapp.data.NotesDatabase
+import com.plcoding.storingapp.presentation.AddNoteScreen
+import com.plcoding.storingapp.presentation.NotesScreen
+import com.plcoding.storingapp.presentation.NotesViewModel
+import com.plcoding.storingapp.presentation.SearchScreen
+import com.plcoding.storingapp.presentation.UpdateDataScreen
+import com.plcoding.storingapp.ui.theme.Roomtest2Theme
 
 class MainActivity : ComponentActivity() {
 

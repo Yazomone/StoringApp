@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2.data
+package com.plcoding.storingapp.data
 
 import androidx.room.Dao
 import androidx.room.Delete

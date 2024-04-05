@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2
+package com.plcoding.storingapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

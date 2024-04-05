@@ -1,7 +1,6 @@
-package com.plcoding.roomtest2.presentation
+package com.plcoding.storingapp.presentation
 
-import androidx.room.Query
-import com.plcoding.roomtest2.data.Note
+import com.plcoding.storingapp.data.Note
 
 sealed interface NotesEvent {
 

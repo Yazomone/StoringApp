@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2.presentation
+package com.plcoding.storingapp.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.plcoding.roomtest2.data.Note
+import com.plcoding.storingapp.data.Note
 
 
 @Composable

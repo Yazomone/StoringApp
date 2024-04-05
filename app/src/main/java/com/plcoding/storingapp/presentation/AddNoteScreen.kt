@@ -1,5 +1,4 @@
-package com.plcoding.roomtest2.presentation
-
+package com.plcoding.storingapp.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,26 +18,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.plcoding.roomtest2.data.Note
 
 @Composable
-fun UpdateDataScreen (
-    title: String,
-    description: String,
+fun AddNoteScreen (
     state: NotesState,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ){
-
+    var titleEmpty by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             Row(
@@ -57,23 +57,28 @@ fun UpdateDataScreen (
 
             }
         },
-        /*
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                onEvent(NotesEvent.UpdateNote(
-
-                ))
-                navController.popBackStack()
+                if (state.title.value.isEmpty()) {
+                    titleEmpty = true
+                } else {
+                    if (state.description.value.isEmpty()){
+                        state.description.value = "無敘述"
+                    }
+                    onEvent(NotesEvent.SaveNote(
+                        title = state.title.value,
+                        description = state.description.value
+                    ))
+                    navController.popBackStack()
+                }
             }) {
                 Icon(imageVector = Icons.Rounded.Check,
                     contentDescription = "Save Note"
                 )
             }
         }
-
-         */
-    ) {paddingValues ->
-
+    ) {paddingValues ->  
+        
         Column (
             modifier = Modifier
                 .padding(paddingValues)
@@ -83,24 +88,43 @@ fun UpdateDataScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = title,
-                onValueChange = { state.title.value = it },
+                value = state.title.value,
+                onValueChange = {
+                    state.title.value = it
+                    if (it.isNotEmpty()) {
+                        titleEmpty = false
+                    }
+                },
                 textStyle = TextStyle(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Title")
-                }
+                    Text(text = "Text")
+                },
+                isError = titleEmpty,
 
             )
+
+            if (titleEmpty) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 0.dp),
+                    text = "標題不能為空白",
+                    color = Color.Red,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = description ?: "",
-                onValueChange = { state.description.value = it },
+                value = state.description.value,
+                onValueChange = {
+                    state.description.value = it
+                },
                 placeholder = {
                     Text(text = "Description")
                 }

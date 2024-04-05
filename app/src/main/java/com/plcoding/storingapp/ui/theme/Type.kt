@@ -1,4 +1,4 @@
-package com.plcoding.roomtest2.ui.theme
+package com.plcoding.storingapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
