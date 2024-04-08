@@ -1,6 +1,7 @@
 package com.plcoding.storingapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -81,12 +82,16 @@ class MainActivity : ComponentActivity() {
                                 onEvent = viewModel::onEvent
                             )
                         }
-                        composable("UpdateDataScreen/{title}/{description}") { backStackEntry ->
+                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val description = backStackEntry.arguments?.getString("description") ?: ""
+                            val dateAdded = backStackEntry.arguments?.getString("dateAdded") ?: ""
                             UpdateDataScreen(
+                                id,
                                 title,
                                 description,
+                                dateAdded,
                                 state = state,
                                 navController = navController,
                                 onEvent = viewModel::onEvent

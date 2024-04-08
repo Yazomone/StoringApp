@@ -20,7 +20,9 @@ sealed interface NotesEvent {
     ):NotesEvent
 
     data class UpdateNote(
-        val title: String,
-        val description: String
+        val id:Int,
+        val updatedTitle: String,
+        val updatedDescription: String,
+        val dateAdded: Long
     ):NotesEvent
 }

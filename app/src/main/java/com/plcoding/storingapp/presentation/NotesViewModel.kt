@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.presentation
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +28,6 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 //
     private val _searchResults = MutableStateFlow<List<Note>>(emptyList())
-    val searchResults: StateFlow<List<Note>> = _searchResults.asStateFlow()
 
     val _state = MutableStateFlow(NotesState())
     val state =
@@ -43,7 +43,6 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
                     dao.deleteNote(event.note)
-
                     _searchResults.value = dao.searchNotes(_searchResults.value.map { it.title }.joinToString(" "))
 
                 }
@@ -68,8 +67,6 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
                 }
             }
 
-
-
             is NotesEvent.SearchNote -> {
                 val query = event.query
                 viewModelScope.launch {
@@ -78,18 +75,21 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
             }
 
             is NotesEvent.UpdateNote -> {
+                val note = Note(
+                    id = event.id,
+                    title = event.updatedTitle,
+                    description = event.updatedDescription,
+                    dateAdded = event.dateAdded
+                )
                 viewModelScope.launch {
-                    val note = Note(
-                        title = state.value.title.value,
-                        description = state.value.description.value,
-                        dateAdded = System.currentTimeMillis()
-                    )
                     dao.updateNote(note)
+                }
 
-                    isSortedByDateAdded.value = !isSortedByDateAdded.value
-
-                    _searchResults.value =
-                        dao.searchNotes(_searchResults.value.map { it.title }.joinToString(" "))
+                _state.update {
+                    it.copy(
+                        title = mutableStateOf(""),
+                        description = mutableStateOf("")
+                    )
                 }
             }
 

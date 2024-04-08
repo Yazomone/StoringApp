@@ -68,7 +68,8 @@ fun AddNoteScreen (
                     onEvent(NotesEvent.SaveNote(
                         title = state.title.value,
                         description = state.description.value
-                    ))
+                        )
+                    )
                     navController.popBackStack()
                 }
             }) {

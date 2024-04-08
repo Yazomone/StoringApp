@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -122,8 +123,10 @@ fun NoteItem(
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ) {
+    val id = rememberSaveable { mutableStateOf("") }
     val noteTitle = rememberSaveable { mutableStateOf("") }
     val noteDescription = rememberSaveable { mutableStateOf("") }
+    val dateAdded = rememberSaveable { mutableStateOf("") }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,9 +157,11 @@ fun NoteItem(
         }
         IconButton(
             onClick = {
+                id.value = state.notes[index].id.toString()
                 noteTitle.value = state.notes[index].title
                 noteDescription.value = state.notes[index].description
-                navController.navigate("UpdateDataScreen/${noteTitle.value}/${noteDescription.value}")
+                dateAdded.value = state.notes[index].dateAdded.toString()
+                navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}")
             }
         ) {
 
