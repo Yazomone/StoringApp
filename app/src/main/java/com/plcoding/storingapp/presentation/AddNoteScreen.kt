@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,27 +58,38 @@ fun AddNoteScreen (
 
             }
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                if (state.title.value.isEmpty()) {
-                    titleEmpty = true
-                } else {
-                    if (state.description.value.isEmpty()){
-                        state.description.value = "無敘述"
-                    }
-                    onEvent(NotesEvent.SaveNote(
-                        title = state.title.value,
-                        description = state.description.value
-                        )
+        bottomBar = {
+            Column {
+                FloatingActionButton(onClick = {
+                    navController.navigate("CameraPermission")
+                }) {
+                    Icon(imageVector = Icons.Rounded.PhotoCamera,
+                        contentDescription = "Text Recognition"
                     )
-                    navController.popBackStack()
                 }
-            }) {
-                Icon(imageVector = Icons.Rounded.Check,
-                    contentDescription = "Save Note"
-                )
+
+                FloatingActionButton(onClick = {
+                    if (state.title.value.isEmpty()) {
+                        titleEmpty = true
+                    } else {
+                        if (state.description.value.isEmpty()){
+                            state.description.value = "無敘述"
+                        }
+                        onEvent(NotesEvent.SaveNote(
+                            title = state.title.value,
+                            description = state.description.value
+                        ))
+                        navController.popBackStack()
+                    }
+                }) {
+                    Icon(imageVector = Icons.Rounded.Check,
+                        contentDescription = "Save Note"
+                    )
+                }
+
             }
-        }
+        },
+
     ) {paddingValues ->  
         
         Column (

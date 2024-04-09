@@ -1,7 +1,6 @@
 package com.plcoding.storingapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.plcoding.storingapp.Camera.CameraPermission
 import com.plcoding.storingapp.data.NotesDatabase
 import com.plcoding.storingapp.presentation.AddNoteScreen
+import com.plcoding.storingapp.Camera.CameraScreen
 import com.plcoding.storingapp.presentation.NotesScreen
 import com.plcoding.storingapp.presentation.NotesViewModel
 import com.plcoding.storingapp.presentation.SearchScreen
@@ -96,6 +97,9 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 onEvent = viewModel::onEvent
                             )
+                        }
+                        composable("CameraPermission"){
+                            CameraPermission()
                         }
                     }
                 }

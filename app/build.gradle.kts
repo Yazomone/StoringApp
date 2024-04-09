@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material3.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +80,32 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended-android:1.6.3")
 
+
+    //// CAMERA STUFF ////
+    val camerax_version = "1.3.2"
+
+    implementation ("androidx.camera:camera-camera2:$camerax_version")
+    implementation ("androidx.camera:camera-lifecycle:$camerax_version")
+    implementation ("androidx.camera:camera-view:$camerax_version")
+    implementation ("androidx.camera:camera-extensions:$camerax_version")
+
+    ///// LIFECYCLE /////
+    val lifecycle_version = "2.7.0"
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+
+    //// ML-KIT ////
+    implementation ("com.google.mlkit:text-recognition:16.0.0")
+
+    // To recognize Chinese script
+    implementation ("com.google.mlkit:text-recognition-chinese:16.0.0")
+
+    //// ACCOMPANIST ////
+    val accompanist_version = "0.31.6-rc"
+
+    implementation ("com.google.accompanist:accompanist-permissions:$accompanist_version")
 }
