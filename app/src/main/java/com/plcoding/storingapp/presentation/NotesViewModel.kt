@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.plcoding.storingapp.data.CabinetDao
 import com.plcoding.storingapp.data.Note
 import com.plcoding.storingapp.data.NoteDao
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +17,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotesViewModel(private val dao: NoteDao) : ViewModel() {
+class NotesViewModel(
+    private val notedao: NoteDao
+) : ViewModel() {
     private val isSortedByDateAdded = MutableStateFlow(true)
 
     private var notes = isSortedByDateAdded.flatMapLatest { sort ->
             if (sort) {
-                dao.getNotesOrderedByDateAdded()
+                notedao.getNotesOrderedByDateAdded()
             } else {
-                dao.getNotesOrderedByTitle()
+                notedao.getNotesOrderedByTitle()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 //
@@ -42,8 +45,8 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
         when (event) {
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
-                    dao.deleteNote(event.note)
-                    _searchResults.value = dao.searchNotes(_searchResults.value.map { it.title }.joinToString(" "))
+                    notedao.deleteNote(event.note)
+                    _searchResults.value = notedao.searchNotes(_searchResults.value.map { it.title }.joinToString(" "))
 
                 }
             }
@@ -52,11 +55,12 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
                 val note = Note(
                     title = state.value.title.value,
                     description = state.value.description.value,
-                    dateAdded = System.currentTimeMillis()
+                    dateAdded = System.currentTimeMillis(),
+                    cabinetId = 1
                 )
 
                 viewModelScope.launch {
-                    dao.upsertNote(note)
+                    notedao.upsertNote(note)
                 }
 
                 _state.update {
@@ -70,7 +74,7 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
             is NotesEvent.SearchNote -> {
                 val query = event.query
                 viewModelScope.launch {
-                    _searchResults.value = dao.searchNotes(query)
+                    _searchResults.value = notedao.searchNotes(query)
                 }
             }
 
@@ -79,10 +83,11 @@ class NotesViewModel(private val dao: NoteDao) : ViewModel() {
                     id = event.id,
                     title = event.updatedTitle,
                     description = event.updatedDescription,
-                    dateAdded = event.dateAdded
+                    dateAdded = event.dateAdded,
+                    cabinetId = 1
                 )
                 viewModelScope.launch {
-                    dao.updateNote(note)
+                    notedao.updateNote(note)
                 }
 
                 _state.update {

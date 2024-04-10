@@ -19,12 +19,12 @@ import androidx.room.Room
 import com.plcoding.storingapp.Camera.CameraPermission
 import com.plcoding.storingapp.data.NotesDatabase
 import com.plcoding.storingapp.presentation.AddNoteScreen
-import com.plcoding.storingapp.Camera.CameraScreen
+import com.plcoding.storingapp.presentation.CabinetViewModel
 import com.plcoding.storingapp.presentation.NotesScreen
 import com.plcoding.storingapp.presentation.NotesViewModel
 import com.plcoding.storingapp.presentation.SearchScreen
 import com.plcoding.storingapp.presentation.UpdateDataScreen
-import com.plcoding.storingapp.ui.theme.Roomtest2Theme
+import com.plcoding.storingapp.ui.theme.StoringAppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -37,11 +37,21 @@ class MainActivity : ComponentActivity() {
         ).build()
     }
 
-    private val viewModel:NotesViewModel by viewModels<NotesViewModel>(
+    private val NotesviewModel:NotesViewModel by viewModels<NotesViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory{
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return NotesViewModel(database.dao) as T
+                    return NotesViewModel(database.Notedao) as T
+                }
+            }
+        }
+    )
+
+    private val cabinetViewModel: CabinetViewModel by viewModels<CabinetViewModel>(  // 新增的 CabinetViewModel
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return CabinetViewModel(database.CabinetDao) as T
                 }
             }
         }
@@ -50,21 +60,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Roomtest2Theme {
+            StoringAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val state by viewModel.state.collectAsState()
+                    val state by NotesviewModel.state.collectAsState()
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "NotesScreen") {
+                    NavHost(navController = navController, startDestination = "MainScreen") {
+                        composable("MainScreen"){
+                            NotesScreen(
+                                state = state,
+                                navController = navController,
+                                onEvent = cabinetViewModel::onEvent
+                            )
+                        }
                         composable("NotesScreen"){
                             NotesScreen(
                                 state = state,
                                 navController = navController,
-                                onEvent = viewModel::onEvent
+                                onEvent = NotesviewModel::onEvent
                             )
                         }
                         composable("AddNoteScreen"){
@@ -72,7 +89,7 @@ class MainActivity : ComponentActivity() {
                             AddNoteScreen(
                                 state = state,
                                 navController = navController,
-                                onEvent = viewModel::onEvent
+                                onEvent = NotesviewModel::onEvent
                             )
                         }
                         composable("SearchScreen"){
@@ -80,7 +97,7 @@ class MainActivity : ComponentActivity() {
                             SearchScreen(
                                 state = state,
                                 navController = navController,
-                                onEvent = viewModel::onEvent
+                                onEvent = NotesviewModel::onEvent
                             )
                         }
                         composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}") { backStackEntry ->
@@ -95,7 +112,7 @@ class MainActivity : ComponentActivity() {
                                 dateAdded,
                                 state = state,
                                 navController = navController,
-                                onEvent = viewModel::onEvent
+                                onEvent = NotesviewModel::onEvent
                             )
                         }
                         composable("CameraPermission"){
