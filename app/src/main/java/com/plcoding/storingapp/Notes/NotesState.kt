@@ -1,4 +1,4 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

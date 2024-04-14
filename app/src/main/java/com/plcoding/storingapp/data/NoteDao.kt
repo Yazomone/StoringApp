@@ -18,11 +18,11 @@ interface NoteDao {
     @Update
     suspend fun updateNote(note: Note)
 
-    @Query("SELECT * FROM note ORDER BY dateAdded")
-    fun getNotesOrderedByDateAdded(): Flow<List<Note>>
+    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY dateAdded")
+    fun getNotesOrderedByDateAdded(cabinetId: Int): Flow<List<Note>>
 
-    @Query("SELECT * FROM note ORDER BY title ASC")
-    fun getNotesOrderedByTitle(): Flow<List<Note>>
+    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY title ASC")
+    fun getNotesOrderedByTitle(cabinetId: Int): Flow<List<Note>>
 
     @Query("SELECT * FROM note WHERE title LIKE :query || '%' ")
     suspend fun searchNotes(query: String): List<Note>

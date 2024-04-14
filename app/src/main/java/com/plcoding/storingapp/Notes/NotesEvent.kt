@@ -1,4 +1,4 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
 import com.plcoding.storingapp.data.Note
 
@@ -9,10 +9,14 @@ sealed interface NotesEvent {
     data class DeleteNote(
         val note: Note
     ):NotesEvent
+    data class SetCabinetId(
+        val cabinetId: Int
+    ):NotesEvent
 
     data class SaveNote(
         val title: String,
-        val description: String
+        val description: String,
+        val cabinetId: Int
     ):NotesEvent
 
     data class SearchNote(

@@ -1,16 +1,12 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plcoding.storingapp.data.CabinetDao
 import com.plcoding.storingapp.data.Note
 import com.plcoding.storingapp.data.NoteDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -22,14 +18,19 @@ class NotesViewModel(
 ) : ViewModel() {
     private val isSortedByDateAdded = MutableStateFlow(true)
 
-    private var notes = isSortedByDateAdded.flatMapLatest { sort ->
-            if (sort) {
-                notedao.getNotesOrderedByDateAdded()
-            } else {
-                notedao.getNotesOrderedByTitle()
-            }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-//
+    private val currentCabinetId = MutableStateFlow(0)
+    fun setCabinetId(cabinetId: Int) {
+        currentCabinetId.value = cabinetId
+    }
+
+    private var notes = combine(isSortedByDateAdded, currentCabinetId) { sort, cabinetId ->
+        if (sort) {
+            notedao.getNotesOrderedByDateAdded(cabinetId)
+        } else {
+            notedao.getNotesOrderedByTitle(cabinetId)
+        }
+    }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _searchResults = MutableStateFlow<List<Note>>(emptyList())
 
     val _state = MutableStateFlow(NotesState())
@@ -46,7 +47,7 @@ class NotesViewModel(
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
                     notedao.deleteNote(event.note)
-                    _searchResults.value = notedao.searchNotes(_searchResults.value.map { it.title }.joinToString(" "))
+                    _searchResults.value = notedao.searchNotes(_searchResults.value.joinToString(" ") { it.title })
 
                 }
             }
@@ -56,7 +57,7 @@ class NotesViewModel(
                     title = state.value.title.value,
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis(),
-                    cabinetId = 1
+                    cabinetId = event.cabinetId
                 )
 
                 viewModelScope.launch {
@@ -96,6 +97,10 @@ class NotesViewModel(
                         description = mutableStateOf("")
                     )
                 }
+            }
+
+            is NotesEvent.SetCabinetId -> {
+                setCabinetId(event.cabinetId)
             }
 
             NotesEvent.SortNotes -> {

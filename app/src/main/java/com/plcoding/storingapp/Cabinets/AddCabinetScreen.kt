@@ -1,8 +1,9 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Cabinets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,13 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
 @Composable
-fun AddNoteScreen (
-    state: NotesState,
+fun AddCabinetScreen(
+    state: CabinetState,
     navController: NavController,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (CabinetEvent) -> Unit
 ){
-    var titleEmpty by remember { mutableStateOf(false) }
+    var cabinetNameEmpty by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             Row(
@@ -58,40 +59,29 @@ fun AddNoteScreen (
 
             }
         },
-        bottomBar = {
-            Column {
-                FloatingActionButton(onClick = {
-                    navController.navigate("CameraPermission")
-                }) {
-                    Icon(imageVector = Icons.Rounded.PhotoCamera,
-                        contentDescription = "Text Recognition"
-                    )
-                }
-
-                FloatingActionButton(onClick = {
-                    if (state.title.value.isEmpty()) {
-                        titleEmpty = true
-                    } else {
-                        if (state.description.value.isEmpty()){
-                            state.description.value = "無敘述"
-                        }
-                        onEvent(NotesEvent.SaveNote(
-                            title = state.title.value,
-                            description = state.description.value
-                        ))
-                        navController.popBackStack()
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                if (state.cabinetName.value.isEmpty()) {
+                    cabinetNameEmpty = true
+                } else {
+                    if (state.cabinetDescription.value.isEmpty()){
+                        state.cabinetDescription.value = "無敘述"
                     }
-                }) {
-                    Icon(imageVector = Icons.Rounded.Check,
-                        contentDescription = "Save Note"
-                    )
+                    onEvent(
+                        CabinetEvent.SaveCabinet(
+                            cabinetName = state.cabinetName.value,
+                            cabinetDescription = state.cabinetDescription.value
+                        ))
+                    navController.popBackStack()
                 }
-
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = "Save Note",
+                )
             }
-        },
-
-    ) {paddingValues ->  
-        
+        }
+    ) {paddingValues ->
         Column (
             modifier = Modifier
                 .padding(paddingValues)
@@ -101,11 +91,11 @@ fun AddNoteScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = state.title.value,
+                value = state.cabinetName.value,
                 onValueChange = {
-                    state.title.value = it
+                    state.cabinetName.value = it
                     if (it.isNotEmpty()) {
-                        titleEmpty = false
+                        cabinetNameEmpty = false
                     }
                 },
                 textStyle = TextStyle(
@@ -113,18 +103,18 @@ fun AddNoteScreen (
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Text")
+                    Text(text = "Name")
                 },
-                isError = titleEmpty,
+                isError = cabinetNameEmpty,
 
-            )
+                )
 
-            if (titleEmpty) {
+            if (cabinetNameEmpty) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 0.dp),
-                    text = "標題不能為空白",
+                    text = "櫃子名稱不能為空白",
                     color = Color.Red,
                     textAlign = TextAlign.Center
                 )
@@ -134,9 +124,9 @@ fun AddNoteScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = state.description.value,
+                value = state.cabinetDescription.value,
                 onValueChange = {
-                    state.description.value = it
+                    state.cabinetDescription.value = it
                 },
                 placeholder = {
                     Text(text = "Description")
@@ -144,8 +134,5 @@ fun AddNoteScreen (
 
             )
         }
-
     }
-
-
 }

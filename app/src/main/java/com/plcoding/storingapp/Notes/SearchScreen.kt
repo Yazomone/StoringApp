@@ -1,4 +1,4 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

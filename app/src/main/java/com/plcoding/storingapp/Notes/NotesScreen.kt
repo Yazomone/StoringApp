@@ -1,4 +1,4 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Sort
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -43,11 +45,10 @@ import androidx.navigation.NavController
 fun NotesScreen(
     state: NotesState,
     navController: NavController,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (NotesEvent) -> Unit,
+    cabinetId: String
 ) {
-
-
-
+    onEvent(NotesEvent.SetCabinetId(cabinetId.toInt()))
     Scaffold(
         topBar = {
             Row(
@@ -58,6 +59,13 @@ fun NotesScreen(
                     .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
+                }
+                /*
                 IconButton(onClick = { onEvent(NotesEvent.SortNotes) }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.Sort,
@@ -66,7 +74,7 @@ fun NotesScreen(
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-
+                */
                 Spacer(Modifier.weight(1f))
 
                 IconButton(onClick = {
@@ -83,8 +91,9 @@ fun NotesScreen(
             FloatingActionButton(onClick = {
                 state.title.value = ""
                 state.description.value = ""
-                navController.navigate("AddNoteScreen")
+                navController.navigate("AddNoteScreen/${cabinetId}")
             }) {
+                
                 Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add new note")
             }
         }
@@ -106,11 +115,8 @@ fun NotesScreen(
                     onEvent = onEvent
                 )
             }
-
         }
-
     }
-
 }
 
 @Composable
@@ -124,6 +130,7 @@ fun NoteItem(
     val noteTitle = rememberSaveable { mutableStateOf("") }
     val noteDescription = rememberSaveable { mutableStateOf("") }
     val dateAdded = rememberSaveable { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,30 +159,48 @@ fun NoteItem(
             )
 
         }
-        IconButton(
-            onClick = {
-                id.value = state.notes[index].id.toString()
-                noteTitle.value = state.notes[index].title
-                noteDescription.value = state.notes[index].description
-                dateAdded.value = state.notes[index].dateAdded.toString()
-                navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}")
-            }
-        ) {
 
+        IconButton(onClick = { expanded.value = !expanded.value }) {
             Icon(
-                imageVector = Icons.Rounded.Add,
-                contentDescription = "Update Note",
+                imageVector = Icons.Rounded.MoreVert,
+                contentDescription = "More options",
                 modifier = Modifier.size(35.dp),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
-
         }
+    }
 
-        DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
-            onEvent(NotesEvent.DeleteNote(state.notes[index]))
-        })
+    if (expanded.value){
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.End
+        ){
+            IconButton(
+                onClick = {
+                    id.value = state.notes[index].id.toString()
+                    noteTitle.value = state.notes[index].title
+                    noteDescription.value = state.notes[index].description
+                    dateAdded.value = state.notes[index].dateAdded.toString()
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}")
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Edit,
+                    contentDescription = "Update Note",
+                    modifier = Modifier.size(35.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
+                onEvent(NotesEvent.DeleteNote(state.notes[index]))
+            })
+        }
     }
 }
+
 @Composable
 fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
     val openDialog = remember { mutableStateOf(false) }

@@ -1,7 +1,6 @@
-package com.plcoding.storingapp.presentation
+package com.plcoding.storingapp.Notes
 
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +39,6 @@ fun UpdateDataScreen (
     title: String,
     description: String,
     dateAdded: String,
-    state: NotesState,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ){

@@ -1,6 +1,7 @@
 package com.plcoding.storingapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,25 +17,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.plcoding.storingapp.Cabinets.AddCabinetScreen
 import com.plcoding.storingapp.Camera.CameraPermission
 import com.plcoding.storingapp.data.NotesDatabase
-import com.plcoding.storingapp.presentation.AddNoteScreen
-import com.plcoding.storingapp.presentation.CabinetViewModel
-import com.plcoding.storingapp.presentation.NotesScreen
-import com.plcoding.storingapp.presentation.NotesViewModel
-import com.plcoding.storingapp.presentation.SearchScreen
-import com.plcoding.storingapp.presentation.UpdateDataScreen
+import com.plcoding.storingapp.Notes.AddNoteScreen
+import com.plcoding.storingapp.Cabinets.CabinetViewModel
+import com.plcoding.storingapp.Cabinets.MainScreen
+import com.plcoding.storingapp.Notes.NotesScreen
+import com.plcoding.storingapp.Notes.NotesViewModel
+import com.plcoding.storingapp.Notes.SearchScreen
+import com.plcoding.storingapp.Notes.UpdateDataScreen
 import com.plcoding.storingapp.ui.theme.StoringAppTheme
 
 class MainActivity : ComponentActivity() {
-
 
     private val database by lazy{
         Room.databaseBuilder(
             applicationContext,
             NotesDatabase::class.java,
-            "notes.db"
-        ).build()
+            "storingDB.db"
+        )
+        .build()
     }
 
     private val NotesviewModel:NotesViewModel by viewModels<NotesViewModel>(
@@ -47,7 +52,7 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-    private val cabinetViewModel: CabinetViewModel by viewModels<CabinetViewModel>(  // 新增的 CabinetViewModel
+    private val CabinetViewModel: CabinetViewModel by viewModels<CabinetViewModel>(  // 新增的 CabinetViewModel
         factoryProducer = {
             object : ViewModelProvider.Factory{
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -66,36 +71,48 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val state by NotesviewModel.state.collectAsState()
+                    val cabinetState by CabinetViewModel.state.collectAsState()
+                    val noteState by NotesviewModel.state.collectAsState()
                     val navController = rememberNavController()
 
                     NavHost(navController = navController, startDestination = "MainScreen") {
                         composable("MainScreen"){
-                            NotesScreen(
-                                state = state,
+                            MainScreen(
+                                state = cabinetState,
                                 navController = navController,
-                                onEvent = cabinetViewModel::onEvent
+                                onEvent = CabinetViewModel::onEvent
                             )
                         }
-                        composable("NotesScreen"){
+                        composable("NotesScreen/{cabinetId}"){ backStackEntry ->
+                            val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
                             NotesScreen(
-                                state = state,
+                                state = noteState,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent
+                                onEvent = NotesviewModel::onEvent,
+                                cabinetId
                             )
                         }
-                        composable("AddNoteScreen"){
-
+                        composable("AddNoteScreen/{cabinetId}"){backStackEntry ->
+                            val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
                             AddNoteScreen(
-                                state = state,
+                                state = noteState,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent
+                                onEvent = NotesviewModel::onEvent,
+                                cabinetId
+                            )
+                        }
+                        composable("AddCabinetScreen"){
+
+                            AddCabinetScreen(
+                                state = cabinetState,
+                                navController = navController,
+                                onEvent = CabinetViewModel::onEvent
                             )
                         }
                         composable("SearchScreen"){
 
                             SearchScreen(
-                                state = state,
+                                state = noteState,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent
                             )
@@ -110,7 +127,6 @@ class MainActivity : ComponentActivity() {
                                 title,
                                 description,
                                 dateAdded,
-                                state = state,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent
                             )
