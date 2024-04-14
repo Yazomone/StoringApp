@@ -17,10 +17,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.FolderOpen
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -126,7 +130,9 @@ fun CabinetItem(
     val cabinetName = rememberSaveable { mutableStateOf("") }
     val cabinetDescription = rememberSaveable { mutableStateOf("") }
     val dateAddedCabinet = rememberSaveable { mutableStateOf("") }
+
     val expanded = remember { mutableStateOf(false) }
+    val info = remember { mutableStateOf(false) }
 
     val itemCount = viewModel.getItemCountForCabinet(state.cabinets[index].id).collectAsState(initial = 0)
     Row (
@@ -150,17 +156,24 @@ fun CabinetItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Log.d("itemCount.value","${itemCount.value}")
             Text(
                 text = "物品種類: ${itemCount.value}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
+            if(!info.value){
+                //info
+                Text(
+                    text = state.cabinets[index].cabinetDescription,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
         }
         IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
             Icon(
-                imageVector = Icons.Rounded.FolderOpen,
+                imageVector = Icons.Rounded.Inventory2,
                 contentDescription = "More options",
                 modifier = Modifier.size(35.dp),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -194,7 +207,7 @@ fun CabinetItem(
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Add,
+                    imageVector = Icons.Rounded.Edit,
                     contentDescription = "Update Note",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -203,7 +216,7 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
-
+                    //info
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
@@ -216,15 +229,11 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
-                    id.value = state.cabinets[index].id.toString()
-                    cabinetName.value = state.cabinets[index].cabinetName
-                    cabinetDescription.value = state.cabinets[index].cabinetDescription
-                    dateAddedCabinet.value = state.cabinets[index].dateAddedCabinet.toString()
-                    navController.navigate("UpdateCabinetScreen/${id.value}/${cabinetName.value}/${cabinetDescription.value}/${dateAddedCabinet.value}")
+
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Add,
+                    imageVector = Icons.Rounded.Info,
                     contentDescription = "Update Note",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer

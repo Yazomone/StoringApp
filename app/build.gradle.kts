@@ -70,7 +70,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    val room_version = "2.6.0"
+    val room_version = "2.6.1"
 
     implementation("androidx.room:room-ktx:$room_version")
 
@@ -78,9 +78,9 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.3")
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.5")
 
-    implementation ("androidx.compose.runtime:runtime-livedata:1.0.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
 
 
 
@@ -110,5 +110,5 @@ dependencies {
     //// ACCOMPANIST ////
     val accompanist_version = "0.31.6-rc"
 
-    implementation ("com.google.accompanist:accompanist-permissions:$accompanist_version")
+    implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
 }
