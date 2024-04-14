@@ -25,6 +25,7 @@ import com.plcoding.storingapp.data.NotesDatabase
 import com.plcoding.storingapp.Notes.AddNoteScreen
 import com.plcoding.storingapp.Cabinets.CabinetViewModel
 import com.plcoding.storingapp.Cabinets.MainScreen
+import com.plcoding.storingapp.Cabinets.UpdateCabinetScreen
 import com.plcoding.storingapp.Notes.NotesScreen
 import com.plcoding.storingapp.Notes.NotesViewModel
 import com.plcoding.storingapp.Notes.SearchScreen
@@ -66,7 +67,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StoringAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -80,16 +80,26 @@ class MainActivity : ComponentActivity() {
                             MainScreen(
                                 state = cabinetState,
                                 navController = navController,
-                                onEvent = CabinetViewModel::onEvent
+                                onEvent = CabinetViewModel::onEvent,
+                                viewModel= CabinetViewModel
                             )
                         }
-                        composable("NotesScreen/{cabinetId}"){ backStackEntry ->
+                        composable("NotesScreen/{cabinetId}/{cabinetName}"){ backStackEntry ->
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
+                            val cabinetName = backStackEntry.arguments?.getString("cabinetName")?:""
                             NotesScreen(
                                 state = noteState,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent,
-                                cabinetId
+                                cabinetId,
+                                cabinetName
+                            )
+                        }
+                        composable("AddCabinetScreen"){
+                            AddCabinetScreen(
+                                state = cabinetState,
+                                navController = navController,
+                                onEvent = CabinetViewModel::onEvent
                             )
                         }
                         composable("AddNoteScreen/{cabinetId}"){backStackEntry ->
@@ -101,34 +111,41 @@ class MainActivity : ComponentActivity() {
                                 cabinetId
                             )
                         }
-                        composable("AddCabinetScreen"){
-
-                            AddCabinetScreen(
-                                state = cabinetState,
-                                navController = navController,
-                                onEvent = CabinetViewModel::onEvent
-                            )
-                        }
                         composable("SearchScreen"){
-
                             SearchScreen(
                                 state = noteState,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent
                             )
                         }
-                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}") { backStackEntry ->
+                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val description = backStackEntry.arguments?.getString("description") ?: ""
                             val dateAdded = backStackEntry.arguments?.getString("dateAdded") ?: ""
+                            val cabinetId = backStackEntry.arguments?.getString("cabinetId") ?: ""
                             UpdateDataScreen(
                                 id,
                                 title,
                                 description,
                                 dateAdded,
+                                cabinetId,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent
+                            )
+                        }
+                        composable("UpdateCabinetScreen/{id}/{cabinetName}/{cabinetDescription}/{dateAddedCabinet}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val cabinetName = backStackEntry.arguments?.getString("cabinetName") ?: ""
+                            val cabinetDescription = backStackEntry.arguments?.getString("cabinetDescription") ?: ""
+                            val dateAddedCabinet = backStackEntry.arguments?.getString("dateAddedCabinet") ?: ""
+                            UpdateCabinetScreen(
+                                id,
+                                cabinetName,
+                                cabinetDescription,
+                                dateAddedCabinet,
+                                navController = navController,
+                                onEvent = CabinetViewModel::onEvent
                             )
                         }
                         composable("CameraPermission"){

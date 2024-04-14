@@ -85,7 +85,7 @@ class NotesViewModel(
                     title = event.updatedTitle,
                     description = event.updatedDescription,
                     dateAdded = event.dateAdded,
-                    cabinetId = 1
+                    cabinetId = event.cabinetId
                 )
                 viewModelScope.launch {
                     notedao.updateNote(note)

@@ -1,6 +1,6 @@
-package com.plcoding.storingapp.Notes
+package com.plcoding.storingapp.Cabinets
 
-
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,20 +32,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.plcoding.storingapp.Notes.NotesEvent
 
 @Composable
-fun UpdateDataScreen (
-    id: String,
-    title: String,
-    description: String,
-    dateAdded: String,
-    cabinetId:String,
+fun UpdateCabinetScreen(
+    id:String,
+    cabinetName:String,
+    cabinetDescription:String,
+    dateAddedCabinet:String,
     navController: NavController,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (CabinetEvent) -> Unit
 ){
-    var titleEmpty by remember { mutableStateOf(false) }
-    var updatedTitle by remember { mutableStateOf(title) }
-    var updatedDescription by remember { mutableStateOf(description) }
+    var cabinetNameEmpty by remember { mutableStateOf(false) }
+    var updatedcabinetName by remember { mutableStateOf(cabinetName) }
+    var updatedcabinetDescription by remember { mutableStateOf(cabinetDescription) }
     Scaffold (
         topBar = {
             Row(
@@ -64,29 +64,32 @@ fun UpdateDataScreen (
 
             }
         },
-
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (updatedTitle.isEmpty()) {
-                    titleEmpty = true
+                if (updatedcabinetName.isEmpty()) {
+                    cabinetNameEmpty = true
                 } else {
-                    if (updatedDescription.isEmpty()) {
-                        updatedDescription = "無敘述"
+                    if (updatedcabinetDescription.isEmpty()){
+                        updatedcabinetDescription = "無敘述"
                     }
+                    Log.d("id",id)
+                    Log.d("updatedcabinetName",updatedcabinetName)
+                    Log.d("updatedcabinetDescription",updatedcabinetDescription)
+                    Log.d("dateAddedCabinet",dateAddedCabinet)
                     onEvent(
-                        NotesEvent.UpdateNote(
+                        CabinetEvent.UpdateCabinet(
                             id.toInt(),
-                            updatedTitle,
-                            updatedDescription,
-                            dateAdded.toLong(),
-                            cabinetId.toInt(),
+                            updatedcabinetName,
+                            updatedcabinetDescription,
+                            dateAddedCabinet.toLong()
                         )
                     )
                     navController.popBackStack()
                 }
             }) {
-                Icon(imageVector = Icons.Rounded.Check,
-                    contentDescription = "Update Note"
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = "Update Note",
                 )
             }
         }
@@ -100,11 +103,11 @@ fun UpdateDataScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = updatedTitle,
+                value = updatedcabinetName,
                 onValueChange = {
-                    updatedTitle = it
+                    updatedcabinetName = it
                     if (it.isNotEmpty()) {
-                        titleEmpty = false
+                        cabinetNameEmpty = false
                     }
                 },
                 textStyle = TextStyle(
@@ -112,17 +115,17 @@ fun UpdateDataScreen (
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Name")
+                    Text(text = "Cabinet Name")
                 },
-                isError = titleEmpty,
+                isError = cabinetNameEmpty,
             )
 
-            if (titleEmpty) {
+            if (cabinetNameEmpty) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 0.dp),
-                    text = "標題不能為空白",
+                    text = "櫃子名稱不能為空白",
                     color = Color.Red,
                     textAlign = TextAlign.Center
                 )
@@ -132,18 +135,15 @@ fun UpdateDataScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = updatedDescription ?: "",
+                value = updatedcabinetDescription,
                 onValueChange = {
-                    updatedDescription = it
+                    updatedcabinetDescription = it
                 },
                 placeholder = {
-                    Text(text = "description")
+                    Text(text = "Description")
                 }
 
             )
         }
-
     }
-
-
 }

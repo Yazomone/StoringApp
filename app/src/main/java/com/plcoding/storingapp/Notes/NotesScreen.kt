@@ -1,7 +1,10 @@
 package com.plcoding.storingapp.Notes
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,17 +39,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.plcoding.storingapp.R
 
 @Composable
 fun NotesScreen(
     state: NotesState,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit,
-    cabinetId: String
+    cabinetId: String,
+    cabinetName:String
 ) {
     onEvent(NotesEvent.SetCabinetId(cabinetId.toInt()))
     Scaffold(
@@ -75,7 +83,12 @@ fun NotesScreen(
                     )
                 }
                 */
-                Spacer(Modifier.weight(1f))
+                Text(
+                    text = cabinetName,
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
 
                 IconButton(onClick = {
                     navController.navigate("SearchScreen")
@@ -99,29 +112,57 @@ fun NotesScreen(
         }
     ) { paddingValues ->
 
-        LazyColumn(
-            contentPadding = paddingValues,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
 
-            items(state.notes.size) { index ->
-                NoteItem(
-                    state = state,
-                    index = index,
-                    navController = navController,
-                    onEvent = onEvent
-                )
+            LazyColumn(
+                contentPadding = paddingValues,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                items(state.notes.size) { index ->
+                    NoteItem(
+                        state = state,
+                        index = index,
+                        cabinetId = cabinetId,
+                        navController = navController,
+                        onEvent = onEvent
+                    )
+                }
+            }
+            if (state.notes.isEmpty()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(5.dp),
+                ) {
+                    Image(
+                        modifier = Modifier.size(150.dp),
+                        painter = painterResource(id = R.drawable.sadpic),  // 將 your_image 替換為您的圖片資源
+                        contentDescription = "描述"  // 提供一個描述來提高無障礙訪問性
+                    )
+                    Text(
+                        text = "櫃子裡沒東西~~",
+                        fontSize = 20.sp,
+                        color = Color.Gray,
+
+                    )
+                }
             }
         }
+
+        
     }
 }
 
 @Composable
 fun NoteItem(
     state: NotesState,
+    cabinetId: String,
     index: Int,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
@@ -174,8 +215,10 @@ fun NoteItem(
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.End
+                .padding(12.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ){
             IconButton(
                 onClick = {
@@ -183,7 +226,7 @@ fun NoteItem(
                     noteTitle.value = state.notes[index].title
                     noteDescription.value = state.notes[index].description
                     dateAdded.value = state.notes[index].dateAdded.toString()
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}")
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}")
                 }
             ) {
                 Icon(

@@ -1,15 +1,22 @@
 package com.plcoding.storingapp.Cabinets
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plcoding.storingapp.data.CabinetDao
 import com.plcoding.storingapp.Notes.NotesEvent
 import com.plcoding.storingapp.data.Cabinet
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,6 +44,14 @@ class CabinetViewModel(
                 searchCabinet = searchCabinet
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CabinetState())
+
+    private val itemCountForCabinet = MutableLiveData<Int>()
+
+    fun getItemCountForCabinet(cabinetId: Int): Flow<Int> = flow {
+        cabinetdao.getNoteCountByCabinetId(cabinetId).collect { count ->
+            emit(count)
+        }
+    }
 
     fun onEvent(event: CabinetEvent) {
         when(event){
@@ -77,7 +92,7 @@ class CabinetViewModel(
                     id = event.id,
                     cabinetName = event.updatedCabinetName,
                     cabinetDescription = event.updatedCabinetDescription,
-                    dateAddedCabinet = event.dateAdded
+                    dateAddedCabinet = event.dateAddedCabinet
                 )
                 viewModelScope.launch {
                     cabinetdao.updateCabinet(cabinet)

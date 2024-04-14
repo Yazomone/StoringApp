@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Cabinets
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,9 +31,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +52,8 @@ import androidx.navigation.NavController
 fun MainScreen(
     state: CabinetState,
     navController: NavController,
-    onEvent:(CabinetEvent) -> Unit
+    onEvent:(CabinetEvent) -> Unit,
+    viewModel: CabinetViewModel
 ){
     Scaffold(
         topBar = {
@@ -99,7 +106,8 @@ fun MainScreen(
                     state = state,
                     index = index,
                     navController = navController,
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    viewModel= viewModel
                 )
             }
         }
@@ -111,13 +119,16 @@ fun CabinetItem(
     state: CabinetState,
     index: Int,
     navController: NavController,
-    onEvent: (CabinetEvent) -> Unit
+    onEvent: (CabinetEvent) -> Unit,
+    viewModel: CabinetViewModel
 ){
     val id = rememberSaveable { mutableStateOf("") }
-    val cabinetTitle = rememberSaveable { mutableStateOf("") }
+    val cabinetName = rememberSaveable { mutableStateOf("") }
     val cabinetDescription = rememberSaveable { mutableStateOf("") }
-    val dateAdded = rememberSaveable { mutableStateOf("") }
+    val dateAddedCabinet = rememberSaveable { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
+    val itemCount = viewModel.getItemCountForCabinet(state.cabinets[index].id).collectAsState(initial = 0)
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -139,14 +150,15 @@ fun CabinetItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            Log.d("itemCount.value","${itemCount.value}")
             Text(
-                text = state.cabinets[index].cabinetDescription,
+                text = "物品種類: ${itemCount.value}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
         }
-        IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}")}) {
+        IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
             Icon(
                 imageVector = Icons.Rounded.FolderOpen,
                 contentDescription = "More options",
@@ -175,10 +187,10 @@ fun CabinetItem(
             IconButton(
                 onClick = {
                     id.value = state.cabinets[index].id.toString()
-                    cabinetTitle.value = state.cabinets[index].cabinetName
+                    cabinetName.value = state.cabinets[index].cabinetName
                     cabinetDescription.value = state.cabinets[index].cabinetDescription
-                    dateAdded.value = state.cabinets[index].dateAddedCabinet.toString()
-                    navController.navigate("UpdateDataScreen/${id.value}/${cabinetTitle.value}/${cabinetDescription.value}/${dateAdded.value}")
+                    dateAddedCabinet.value = state.cabinets[index].dateAddedCabinet.toString()
+                    navController.navigate("UpdateCabinetScreen/${id.value}/${cabinetName.value}/${cabinetDescription.value}/${dateAddedCabinet.value}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
@@ -205,10 +217,10 @@ fun CabinetItem(
             IconButton(
                 onClick = {
                     id.value = state.cabinets[index].id.toString()
-                    cabinetTitle.value = state.cabinets[index].cabinetName
+                    cabinetName.value = state.cabinets[index].cabinetName
                     cabinetDescription.value = state.cabinets[index].cabinetDescription
-                    dateAdded.value = state.cabinets[index].dateAddedCabinet.toString()
-                    navController.navigate("UpdateDataScreen/${id.value}/${cabinetTitle.value}/${cabinetDescription.value}/${dateAdded.value}")
+                    dateAddedCabinet.value = state.cabinets[index].dateAddedCabinet.toString()
+                    navController.navigate("UpdateCabinetScreen/${id.value}/${cabinetName.value}/${cabinetDescription.value}/${dateAddedCabinet.value}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(

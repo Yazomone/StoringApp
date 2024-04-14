@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -24,4 +25,7 @@ interface CabinetDao {
 
     @Query("SELECT * FROM Cabinet WHERE cabinetName LIKE :query || '%' ")
     suspend fun searchCabinet(query: String): List<Cabinet>
+
+    @Query("SELECT COUNT(*) FROM note WHERE cabinetId = :cabinetId")
+    fun getNoteCountByCabinetId(cabinetId: Int): Flow<Int>
 }

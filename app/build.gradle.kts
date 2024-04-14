@@ -80,6 +80,9 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended-android:1.6.3")
 
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.1")
+
+
 
     //// CAMERA STUFF ////
     val camerax_version = "1.3.2"

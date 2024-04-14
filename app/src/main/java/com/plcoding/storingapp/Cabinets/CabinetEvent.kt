@@ -23,6 +23,6 @@ sealed interface CabinetEvent {
         val id: Int,
         val updatedCabinetName: String,
         val updatedCabinetDescription: String,
-        val dateAdded: Long
+        val dateAddedCabinet: Long
     ):CabinetEvent
 }

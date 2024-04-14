@@ -27,6 +27,7 @@ sealed interface NotesEvent {
         val id:Int,
         val updatedTitle: String,
         val updatedDescription: String,
-        val dateAdded: Long
+        val dateAdded: Long,
+        val cabinetId: Int
     ):NotesEvent
 }

@@ -27,4 +27,6 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE title LIKE :query || '%' ")
     suspend fun searchNotes(query: String): List<Note>
 
+
+
 }
