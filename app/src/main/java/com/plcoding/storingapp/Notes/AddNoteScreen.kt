@@ -1,6 +1,7 @@
 package com.plcoding.storingapp.Notes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,10 +62,16 @@ fun AddNoteScreen (
             }
         },
         bottomBar = {
-            Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
                 FloatingActionButton(onClick = {
                     navController.navigate("CameraPermission")
                 }) {
+
                     Icon(imageVector = Icons.Rounded.PhotoCamera,
                         contentDescription = "Text Recognition"
                     )
@@ -87,7 +94,6 @@ fun AddNoteScreen (
                         navController.popBackStack()
                     }
                 }) {
-                    Spacer(Modifier.weight(1f))
                     Icon(imageVector = Icons.Rounded.Check,
                         contentDescription = "Save Note"
                     )
@@ -119,7 +125,7 @@ fun AddNoteScreen (
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Text")
+                    Text(text = "Name")
                 },
                 isError = titleEmpty,
 
@@ -147,11 +153,7 @@ fun AddNoteScreen (
                 placeholder = {
                     Text(text = "Description")
                 }
-
             )
         }
-
     }
-
-
 }
