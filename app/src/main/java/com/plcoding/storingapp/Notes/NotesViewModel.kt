@@ -1,22 +1,41 @@
 package com.plcoding.storingapp.Notes
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plcoding.storingapp.data.Note
 import com.plcoding.storingapp.data.NoteDao
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
-    private val notedao: NoteDao
+    private val noteDoa: NoteDao
 ) : ViewModel() {
     private val isSortedByDateAdded = MutableStateFlow(true)
+
+    val displayText = MutableSharedFlow<String>()
+
+    val isTitleDuplicate = MutableStateFlow(false)
+
+    // 當檢查標題是否重複時，更新這個 MutableState 的值
+    fun checkDuplicateTitle(title: String, cabinetId: Int){
+
+        viewModelScope.launch {
+            val existingNote = noteDoa.findDuplicateTitle(cabinetId, title).first()
+            Log.d("existingNote", existingNote.toString())
+            isTitleDuplicate.value = existingNote.isNotEmpty()
+            Log.d("isTitleDuplicate", isTitleDuplicate.value.toString())
+        }
+    }
 
     private val currentCabinetId = MutableStateFlow(0)
     fun setCabinetId(cabinetId: Int) {
@@ -25,9 +44,9 @@ class NotesViewModel(
 
     private var notes = combine(isSortedByDateAdded, currentCabinetId) { sort, cabinetId ->
         if (sort) {
-            notedao.getNotesOrderedByDateAdded(cabinetId)
+            noteDoa.getNotesOrderedByDateAdded(cabinetId)
         } else {
-            notedao.getNotesOrderedByTitle(cabinetId)
+            noteDoa.getNotesOrderedByTitle(cabinetId)
         }
     }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -42,12 +61,20 @@ class NotesViewModel(
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NotesState())
 
+
+    fun updateDisplayText(text: String) {
+        viewModelScope.launch {
+            displayText.emit(text)
+        }
+        Log.d("displayText",text)
+    }
+
     fun onEvent(event: NotesEvent) {
         when (event) {
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
-                    notedao.deleteNote(event.note)
-                    _searchResults.value = notedao.searchNotes(_searchResults.value.joinToString(" ") { it.title })
+                    noteDoa.deleteNote(event.note)
+                    _searchResults.value = noteDoa.searchNotes(_searchResults.value.joinToString(" ") { it.title })
 
                 }
             }
@@ -61,7 +88,7 @@ class NotesViewModel(
                 )
 
                 viewModelScope.launch {
-                    notedao.upsertNote(note)
+                    noteDoa.upsertNote(note)
                 }
 
                 _state.update {
@@ -75,7 +102,7 @@ class NotesViewModel(
             is NotesEvent.SearchNote -> {
                 val query = event.query
                 viewModelScope.launch {
-                    _searchResults.value = notedao.searchNotes(query)
+                    _searchResults.value = noteDoa.searchNotes(query)
                 }
             }
 
@@ -88,7 +115,7 @@ class NotesViewModel(
                     cabinetId = event.cabinetId
                 )
                 viewModelScope.launch {
-                    notedao.updateNote(note)
+                    noteDoa.updateNote(note)
                 }
 
                 _state.update {

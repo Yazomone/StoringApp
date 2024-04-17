@@ -145,47 +145,47 @@ fun SearchItem(
 
         }
 
-        DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed = {
-            onEvent(NotesEvent.DeleteNote(note))
-        })
+//        DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed = {
+//            onEvent(NotesEvent.DeleteNote(note))
+//        })
 
     }
 }
-
-@Composable
-fun DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed: () -> Unit) {
-    val openDialog = remember { mutableStateOf(false) }
-
-    IconButton(onClick = { openDialog.value = true }) {
-        Icon(
-            imageVector = Icons.Rounded.Delete,
-            contentDescription = "Delete Note",
-            modifier = Modifier.size(35.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    }
-
-    if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = { Text("確認刪除") },
-            text = { Text("您確定要刪除這個筆記嗎？") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        onDeleteConfirmed()
-                        openDialog.value = false
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("確認", color = Color.White)
-                }
-            },
-            dismissButton = {
-                Button(onClick = { openDialog.value = false }) {
-                    Text("取消")
-                }
-            }
-        )
-    }
-}
+//
+//@Composable
+//fun DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed: () -> Unit) {
+//    val openDialog = remember { mutableStateOf(false) }
+//
+//    IconButton(onClick = { openDialog.value = true }) {
+//        Icon(
+//            imageVector = Icons.Rounded.Delete,
+//            contentDescription = "Delete Note",
+//            modifier = Modifier.size(35.dp),
+//            tint = MaterialTheme.colorScheme.onPrimaryContainer
+//        )
+//    }
+//
+//    if (openDialog.value) {
+//        AlertDialog(
+//            onDismissRequest = { openDialog.value = false },
+//            title = { Text("確認刪除") },
+//            text = { Text("您確定要刪除這個筆記嗎？") },
+//            confirmButton = {
+//                Button(
+//                    onClick = {
+//                        onDeleteConfirmed()
+//                        openDialog.value = false
+//                    },
+//                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+//                ) {
+//                    Text("確認", color = Color.White)
+//                }
+//            },
+//            dismissButton = {
+//                Button(onClick = { openDialog.value = false }) {
+//                    Text("取消")
+//                }
+//            }
+//        )
+//    }
+//}

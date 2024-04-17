@@ -1,6 +1,5 @@
 package com.plcoding.storingapp.Cabinets
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,17 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.FolderOpen
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,10 +32,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun MainScreen(
@@ -69,14 +66,18 @@ fun MainScreen(
                     .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-                IconButton(onClick = { onEvent(CabinetEvent.SortCabinets) }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.Sort,
-                        contentDescription = "Sort Cabinets",
-                        modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+//                var showMenu by remember {
+//                    mutableStateOf(false)
+//                }
+
+//                IconButton(onClick = { showMenu = true }) {
+//                    Icon(
+//                        imageVector = Icons.Rounded.Settings,
+//                        contentDescription = "Settings",
+//                        modifier = Modifier.size(35.dp),
+//                        tint = MaterialTheme.colorScheme.onPrimary
+//                    )
+//                }
                 Spacer(Modifier.weight(1f))
 
                 IconButton(onClick = {
@@ -118,6 +119,7 @@ fun MainScreen(
     }
 }
 
+
 @Composable
 fun CabinetItem(
     state: CabinetState,
@@ -133,8 +135,10 @@ fun CabinetItem(
 
     val expanded = remember { mutableStateOf(false) }
     val info = remember { mutableStateOf(false) }
+    val createTime = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
 
     val itemCount = viewModel.getItemCountForCabinet(state.cabinets[index].id).collectAsState(initial = 0)
+
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -157,15 +161,20 @@ fun CabinetItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "物品種類: ${itemCount.value}",
+                text = state.cabinets[index].cabinetDescription,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
-            if(!info.value){
-                //info
+            if(info.value){
                 Text(
-                    text = state.cabinets[index].cabinetDescription,
+                    text = "物品種類: ${itemCount.value}",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+
+                Text(
+                    text = "創建日期:${createTime.format(state.cabinets[index].dateAddedCabinet)}",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
@@ -208,7 +217,7 @@ fun CabinetItem(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Edit,
-                    contentDescription = "Update Note",
+                    contentDescription = "Update cabinet",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -216,12 +225,12 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
-                    //info
+
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Star,
-                    contentDescription = "Update Note",
+                    contentDescription = "like Note",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -229,12 +238,13 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
+                    info.value = !info.value
 
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Info,
-                    contentDescription = "Update Note",
+                    contentDescription = "Info",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -268,7 +278,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
             title = { Text("確認刪除") },
-            text = { Text("您確定要刪除這個筆記嗎？") },
+            text = { Text("您確定要刪除這個櫃子嗎？") },
             confirmButton = {
                 Button(
                     onClick = {

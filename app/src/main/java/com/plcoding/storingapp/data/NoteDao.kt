@@ -27,6 +27,6 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE title LIKE :query || '%' ")
     suspend fun searchNotes(query: String): List<Note>
 
-
-
+    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId and title like :title ORDER BY title ASC")
+    fun findDuplicateTitle(cabinetId: Int,title: String): Flow<List<Note>>
 }

@@ -30,4 +30,5 @@ sealed interface NotesEvent {
         val dateAdded: Long,
         val cabinetId: Int
     ):NotesEvent
+
 }

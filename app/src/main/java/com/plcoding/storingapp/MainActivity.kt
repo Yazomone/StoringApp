@@ -26,6 +26,7 @@ import com.plcoding.storingapp.Notes.AddNoteScreen
 import com.plcoding.storingapp.Cabinets.CabinetViewModel
 import com.plcoding.storingapp.Cabinets.MainScreen
 import com.plcoding.storingapp.Cabinets.UpdateCabinetScreen
+import com.plcoding.storingapp.Camera.CameraScreen
 import com.plcoding.storingapp.Notes.NotesScreen
 import com.plcoding.storingapp.Notes.NotesViewModel
 import com.plcoding.storingapp.Notes.SearchScreen
@@ -108,6 +109,7 @@ class MainActivity : ComponentActivity() {
                                 state = noteState,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent,
+                                viewModel = NotesviewModel,
                                 cabinetId
                             )
                         }
@@ -149,7 +151,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("CameraPermission"){
-                            CameraPermission()
+                            CameraPermission(
+                                navController = navController,
+                                viewModel = NotesviewModel
+                            )
                         }
                     }
                 }

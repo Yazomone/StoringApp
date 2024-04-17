@@ -1,10 +1,10 @@
 package com.plcoding.storingapp.Notes
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,16 +34,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddNoteScreen (
     state: NotesState,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit,
+    viewModel: NotesViewModel,
     cabinetId:String
 ){
     var titleEmpty by remember { mutableStateOf(false) }
+    var DuplicateTitle by remember { mutableStateOf(false) }
+    val isTitleDuplicate by viewModel.isTitleDuplicate.collectAsState()
+    val scannedTitle by viewModel.displayText.collectAsState(initial = "")
+    var title by remember { mutableStateOf("") }
+
+    title = scannedTitle
+
     Scaffold (
         topBar = {
             Row(
@@ -70,6 +82,7 @@ fun AddNoteScreen (
             ){
                 FloatingActionButton(onClick = {
                     navController.navigate("CameraPermission")
+
                 }) {
 
                     Icon(imageVector = Icons.Rounded.PhotoCamera,
@@ -80,18 +93,29 @@ fun AddNoteScreen (
 
 
                 FloatingActionButton(onClick = {
+                    viewModel.checkDuplicateTitle(state.title.value,cabinetId.toInt())
                     if (state.title.value.isEmpty()) {
                         titleEmpty = true
                     } else {
-                        if (state.description.value.isEmpty()){
-                            state.description.value = "無敘述"
+                        viewModel.viewModelScope.launch {
+                            delay(100)
+                            if (isTitleDuplicate) {
+                                DuplicateTitle = true
+                            } else {
+                                if (state.description.value.isEmpty()){
+                                    state.description.value = "無敘述"
+                                }
+                                onEvent(NotesEvent.SaveNote(
+                                    title = state.title.value,
+                                    description = state.description.value,
+                                    cabinetId = cabinetId.toInt()
+                                ))
+                                navController.popBackStack()
+                            }
                         }
-                        onEvent(NotesEvent.SaveNote(
-                            title = state.title.value,
-                            description = state.description.value,
-                            cabinetId = cabinetId.toInt()
-                        ))
-                        navController.popBackStack()
+                        Log.d("isTitleDuplicate in add", isTitleDuplicate.toString())
+
+
                     }
                 }) {
                     Icon(imageVector = Icons.Rounded.Check,
@@ -113,9 +137,11 @@ fun AddNoteScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                value = state.title.value,
+                value = title,
+
                 onValueChange = {
-                    state.title.value = it
+                    title = it
+                    state.title.value = title
                     if (it.isNotEmpty()) {
                         titleEmpty = false
                     }
@@ -137,6 +163,16 @@ fun AddNoteScreen (
                         .fillMaxWidth()
                         .padding(top = 0.dp),
                     text = "標題不能為空白",
+                    color = Color.Red,
+                    textAlign = TextAlign.Center
+                )
+            }
+            if (DuplicateTitle) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 0.dp),
+                    text = "標題已重複",
                     color = Color.Red,
                     textAlign = TextAlign.Center
                 )
