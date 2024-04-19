@@ -16,7 +16,8 @@ sealed interface NotesEvent {
     data class SaveNote(
         val title: String,
         val description: String,
-        val cabinetId: Int
+        val cabinetId: Int,
+        val nodeAmount: Int
     ):NotesEvent
 
     data class SearchNote(
@@ -28,7 +29,8 @@ sealed interface NotesEvent {
         val updatedTitle: String,
         val updatedDescription: String,
         val dateAdded: Long,
-        val cabinetId: Int
+        val cabinetId: Int,
+        val nodeAmount: Int
     ):NotesEvent
 
 }

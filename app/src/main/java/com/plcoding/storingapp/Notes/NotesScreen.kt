@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
@@ -32,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -47,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.plcoding.storingapp.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun NotesScreen(
@@ -171,7 +175,13 @@ fun NoteItem(
     val noteTitle = rememberSaveable { mutableStateOf("") }
     val noteDescription = rememberSaveable { mutableStateOf("") }
     val dateAdded = rememberSaveable { mutableStateOf("") }
+    val noteAmount = rememberSaveable { mutableStateOf(0) }
+
+    val info = remember { mutableStateOf(false) }
     val expanded = remember { mutableStateOf(false) }
+    val createTime = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,10 +204,24 @@ fun NoteItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = state.notes[index].description,
+                text = "物品數量: ${state.notes[index].nodeAmount}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
+
+            if(info.value){
+                Text(
+                    text = state.notes[index].description,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+
+                Text(
+                    text = "創建日期:${createTime.format(state.notes[index].dateAdded)}",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
 
         }
 
@@ -209,6 +233,7 @@ fun NoteItem(
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+
     }
 
     if (expanded.value){
@@ -226,8 +251,9 @@ fun NoteItem(
                     noteTitle.value = state.notes[index].title
                     noteDescription.value = state.notes[index].description
                     dateAdded.value = state.notes[index].dateAdded.toString()
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}")
-                }
+                    noteAmount.value = state.notes[index].nodeAmount
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}/${noteAmount.value}")
+                },Modifier.padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Edit,
@@ -240,6 +266,20 @@ fun NoteItem(
             DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
                 onEvent(NotesEvent.DeleteNote(state.notes[index]))
             })
+
+            IconButton(
+                onClick = {
+                    info.value = !info.value
+
+                },Modifier.padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Info,
+                    contentDescription = "Info",
+                    modifier = Modifier.size(35.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
     }
 }
@@ -248,7 +288,7 @@ fun NoteItem(
 fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
     val openDialog = remember { mutableStateOf(false) }
 
-    IconButton(onClick = { openDialog.value = true }) {
+    IconButton(onClick = { openDialog.value = true },Modifier.padding(8.dp)) {
         Icon(
             imageVector = Icons.Rounded.Delete,
             contentDescription = "Delete Note",

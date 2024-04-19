@@ -8,6 +8,7 @@ data class CabinetState(
     val cabinets: List<Cabinet> = emptyList(),
     val cabinetName: MutableState<String> = mutableStateOf(""),
     val cabinetDescription: MutableState<String> = mutableStateOf(""),
-    val searchCabinet: List<Cabinet> = emptyList()
+    val searchCabinet: List<Cabinet> = emptyList(),
+    val isFavorite: MutableState<Boolean> = mutableStateOf(false)
 
 )

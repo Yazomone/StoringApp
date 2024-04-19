@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Cabinets
 
+import androidx.compose.runtime.MutableState
 import com.plcoding.storingapp.data.Cabinet
 
 sealed interface CabinetEvent {
@@ -24,5 +25,10 @@ sealed interface CabinetEvent {
         val updatedCabinetName: String,
         val updatedCabinetDescription: String,
         val dateAddedCabinet: Long
+    ):CabinetEvent
+
+    data class FavoriteCabinet(
+        val id: Int,
+        val isFavorite: MutableState<Boolean>
     ):CabinetEvent
 }

@@ -3,16 +3,24 @@ package com.plcoding.storingapp.Notes
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.PhotoCamera
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,7 +28,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,22 +93,20 @@ fun AddNoteScreen (
             ){
                 FloatingActionButton(onClick = {
                     navController.navigate("CameraPermission")
-
                 }) {
-
                     Icon(imageVector = Icons.Rounded.PhotoCamera,
                         contentDescription = "Text Recognition"
                     )
                 }
 
-
-
                 FloatingActionButton(onClick = {
-                    viewModel.checkDuplicateTitle(state.title.value,cabinetId.toInt())
+
+
                     if (state.title.value.isEmpty()) {
                         titleEmpty = true
                     } else {
                         viewModel.viewModelScope.launch {
+                            viewModel.checkDuplicateTitle(state.title.value,cabinetId.toInt())
                             delay(100)
                             if (isTitleDuplicate) {
                                 DuplicateTitle = true
@@ -108,14 +117,13 @@ fun AddNoteScreen (
                                 onEvent(NotesEvent.SaveNote(
                                     title = state.title.value,
                                     description = state.description.value,
-                                    cabinetId = cabinetId.toInt()
+                                    cabinetId = cabinetId.toInt(),
+                                    nodeAmount = state.nodeAmount.value
                                 ))
                                 navController.popBackStack()
                             }
                         }
                         Log.d("isTitleDuplicate in add", isTitleDuplicate.toString())
-
-
                     }
                 }) {
                     Icon(imageVector = Icons.Rounded.Check,
@@ -145,6 +153,7 @@ fun AddNoteScreen (
                     if (it.isNotEmpty()) {
                         titleEmpty = false
                     }
+
                 },
                 textStyle = TextStyle(
                     fontWeight = FontWeight.SemiBold,
@@ -190,6 +199,57 @@ fun AddNoteScreen (
                     Text(text = "Description")
                 }
             )
+
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Counter(
+                    nodeAmount = state.nodeAmount
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun Counter( nodeAmount : MutableState<Int>) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+
+    ) {
+        Button(
+            onClick = { if (nodeAmount.value > 1) nodeAmount.value -- },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("-")
+        }
+        TextField(
+            modifier = Modifier
+                .width(90.dp)
+                .wrapContentWidth(unbounded = false)
+                .padding(16.dp),
+            value = nodeAmount.value.toString(),
+            onValueChange = {
+                if (it.matches(Regex("\\d*"))){
+                    nodeAmount.value = it.toIntOrNull() ?: 1
+                    nodeAmount.value = if (nodeAmount.value > 100) 100 else nodeAmount.value
+                }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            textStyle = TextStyle(fontSize = 15.sp, textAlign = TextAlign.Center),
+            shape = RoundedCornerShape(10.dp)
+        )
+        Button(
+            onClick = { nodeAmount.value ++ },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("+")
         }
     }
 }

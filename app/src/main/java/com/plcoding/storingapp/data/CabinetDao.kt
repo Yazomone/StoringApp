@@ -1,6 +1,6 @@
 package com.plcoding.storingapp.data
 
-import androidx.lifecycle.LiveData
+import androidx.compose.runtime.MutableState
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -16,6 +16,15 @@ interface CabinetDao {
     suspend fun deleteCabinet(cabinet: Cabinet)
     @Update
     suspend fun updateCabinet(cabinet: Cabinet)
+
+    @Query("SELECT * FROM Cabinet WHERE isFavorite = 1 ORDER BY dateAddedCabinet DESC")
+    fun getFavoriteCabinets(): Flow<List<Cabinet>>
+
+    @Query("SELECT * FROM Cabinet WHERE isFavorite = 0 ORDER BY dateAddedCabinet DESC")
+    fun getNonFavoriteCabinets(): Flow<List<Cabinet>>
+
+    @Query("UPDATE Cabinet SET isFavorite = :isFavorite WHERE id = :cabinetId")
+    suspend fun updateFavoriteStatus(cabinetId: Int,isFavorite:Boolean)
 
     @Query("SELECT * FROM Cabinet ORDER BY dateAddedCabinet")
     fun getCabinetOrderedByDateAdded(): Flow<List<Cabinet>>

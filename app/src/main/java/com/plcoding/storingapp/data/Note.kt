@@ -15,6 +15,7 @@ data class Note(
     val description: String,
     val dateAdded: Long,
     val cabinetId: Int,
+    val nodeAmount: Int,
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

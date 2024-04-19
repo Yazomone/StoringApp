@@ -40,8 +40,7 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             NotesDatabase::class.java,
             "storingDB.db"
-        )
-        .build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     private val NotesviewModel:NotesViewModel by viewModels<NotesViewModel>(
@@ -120,18 +119,21 @@ class MainActivity : ComponentActivity() {
                                 onEvent = NotesviewModel::onEvent
                             )
                         }
-                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}") { backStackEntry ->
+                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val description = backStackEntry.arguments?.getString("description") ?: ""
                             val dateAdded = backStackEntry.arguments?.getString("dateAdded") ?: ""
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId") ?: ""
+                            val noteAmount = backStackEntry.arguments?.getString("noteAmount") ?: ""
                             UpdateDataScreen(
+                                state = noteState,
                                 id,
                                 title,
                                 description,
                                 dateAdded,
                                 cabinetId,
+                                noteAmount,
                                 navController = navController,
                                 onEvent = NotesviewModel::onEvent
                             )

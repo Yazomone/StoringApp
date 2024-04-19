@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plcoding.storingapp.data.Note
 import com.plcoding.storingapp.data.NoteDao
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,14 +33,12 @@ class NotesViewModel(
 
         viewModelScope.launch {
             val existingNote = noteDoa.findDuplicateTitle(cabinetId, title).first()
-            Log.d("existingNote", existingNote.toString())
             isTitleDuplicate.value = existingNote.isNotEmpty()
-            Log.d("isTitleDuplicate", isTitleDuplicate.value.toString())
         }
     }
 
     private val currentCabinetId = MutableStateFlow(0)
-    fun setCabinetId(cabinetId: Int) {
+    private fun setCabinetId(cabinetId: Int) {
         currentCabinetId.value = cabinetId
     }
 
@@ -84,7 +84,8 @@ class NotesViewModel(
                     title = state.value.title.value,
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis(),
-                    cabinetId = event.cabinetId
+                    cabinetId = event.cabinetId,
+                    nodeAmount = state.value.nodeAmount.value
                 )
 
                 viewModelScope.launch {
@@ -112,7 +113,8 @@ class NotesViewModel(
                     title = event.updatedTitle,
                     description = event.updatedDescription,
                     dateAdded = event.dateAdded,
-                    cabinetId = event.cabinetId
+                    cabinetId = event.cabinetId,
+                    nodeAmount = state.value.nodeAmount.value
                 )
                 viewModelScope.launch {
                     noteDoa.updateNote(note)

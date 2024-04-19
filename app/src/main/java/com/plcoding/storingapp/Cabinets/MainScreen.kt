@@ -22,6 +22,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -66,18 +69,15 @@ fun MainScreen(
                     .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
-//                var showMenu by remember {
-//                    mutableStateOf(false)
-//                }
 
-//                IconButton(onClick = { showMenu = true }) {
-//                    Icon(
-//                        imageVector = Icons.Rounded.Settings,
-//                        contentDescription = "Settings",
-//                        modifier = Modifier.size(35.dp),
-//                        tint = MaterialTheme.colorScheme.onPrimary
-//                    )
-//                }
+                IconButton(onClick = { onEvent(CabinetEvent.SortCabinets) }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Settings,
+                        contentDescription = "Settings",
+                        modifier = Modifier.size(35.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
                 Spacer(Modifier.weight(1f))
 
                 IconButton(onClick = {
@@ -136,6 +136,7 @@ fun CabinetItem(
     val expanded = remember { mutableStateOf(false) }
     val info = remember { mutableStateOf(false) }
     val createTime = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+    val isFavorite = remember { mutableStateOf(false) }
 
     val itemCount = viewModel.getItemCountForCabinet(state.cabinets[index].id).collectAsState(initial = 0)
 
@@ -179,6 +180,7 @@ fun CabinetItem(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
+
         }
         IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
             Icon(
@@ -225,16 +227,23 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
+                    isFavorite.value = !isFavorite.value
+                    onEvent(CabinetEvent.FavoriteCabinet(state.cabinets[index].id,isFavorite))
 
                 },Modifier.padding(8.dp)
             ) {
+
                 Icon(
-                    imageVector = Icons.Rounded.Star,
+                    imageVector = if(state.cabinets[index].isFavorite)Icons.Rounded.Star else Icons.Rounded.StarBorder,
                     contentDescription = "like Note",
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-            }
+            }//有點問題
+
+            DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
+                onEvent(CabinetEvent.DeleteCabinet(state.cabinets[index]))
+            })
 
             IconButton(
                 onClick = {
@@ -250,12 +259,6 @@ fun CabinetItem(
                 )
             }
 
-
-
-            DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
-                onEvent(CabinetEvent.DeleteCabinet(state.cabinets[index]))
-
-            })
         }
     }
 }
