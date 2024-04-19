@@ -24,9 +24,15 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY title ASC")
     fun getNotesOrderedByTitle(cabinetId: Int): Flow<List<Note>>
 
-    @Query("SELECT * FROM note WHERE title LIKE :query || '%' ")
+    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId and :query != '' AND title LIKE :query || '%' ")
+    suspend fun searchNotes(query: String,cabinetId: Int): List<Note>
+
+    @Query("SELECT * FROM note WHERE :query != '' AND title LIKE :query || '%' ")
     suspend fun searchNotes(query: String): List<Note>
 
     @Query("SELECT * FROM note WHERE cabinetId = :cabinetId and title like :title ORDER BY title ASC")
     fun findDuplicateTitle(cabinetId: Int,title: String): Flow<List<Note>>
+
+    @Query("SELECT cabinetName FROM Cabinet WHERE id = :cabinetId")
+    fun getCabinetById(cabinetId: Int): Flow<String>
 }

@@ -21,6 +21,11 @@ sealed interface NotesEvent {
     ):NotesEvent
 
     data class SearchNote(
+        val query: String,
+        val cabinetId: Int
+    ):NotesEvent
+
+    data class SearchCabinet(
         val query: String
     ):NotesEvent
 

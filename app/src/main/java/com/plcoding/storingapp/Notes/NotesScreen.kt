@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Notes
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,9 +19,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.AttachFile
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
@@ -73,20 +76,10 @@ fun NotesScreen(
             ) {
 
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    navController.navigate("MainScreen")
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-                /*
-                IconButton(onClick = { onEvent(NotesEvent.SortNotes) }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.Sort,
-                        contentDescription = "Sort Notes",
-                        modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-                */
                 Text(
                     text = cabinetName,
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
@@ -95,7 +88,8 @@ fun NotesScreen(
                 )
 
                 IconButton(onClick = {
-                    navController.navigate("SearchScreen")
+                    Log.d("cabinetId",cabinetId.toString())
+                    navController.navigate("SearchScreen/${cabinetId}")
                 }) {
                     Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search note")
                 }
@@ -146,8 +140,8 @@ fun NotesScreen(
                 ) {
                     Image(
                         modifier = Modifier.size(150.dp),
-                        painter = painterResource(id = R.drawable.sadpic),  // 將 your_image 替換為您的圖片資源
-                        contentDescription = "描述"  // 提供一個描述來提高無障礙訪問性
+                        painter = painterResource(id = R.drawable.sadpic),  //
+                        contentDescription = "描述"  //
                     )
                     Text(
                         text = "櫃子裡沒東西~~",
@@ -190,6 +184,15 @@ fun NoteItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = Icons.Rounded.AttachFile,
+            contentDescription = "Favorite",
+            modifier = Modifier.size(40.dp),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+
+        Spacer(modifier = Modifier.size(10.dp))
+
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -202,6 +205,7 @@ fun NoteItem(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
+
 
             Text(
                 text = "物品數量: ${state.notes[index].nodeAmount}",
@@ -301,7 +305,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
             title = { Text("確認刪除") },
-            text = { Text("您確定要刪除這個筆記嗎？") },
+            text = { Text("您確定要刪除這個物品嗎？") },
             confirmButton = {
                 Button(
                     onClick = {

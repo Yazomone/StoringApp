@@ -23,6 +23,9 @@ interface CabinetDao {
     @Query("SELECT * FROM Cabinet WHERE isFavorite = 0 ORDER BY dateAddedCabinet DESC")
     fun getNonFavoriteCabinets(): Flow<List<Cabinet>>
 
+    @Query("SELECT * FROM Cabinet ORDER BY isFavorite DESC, dateAddedCabinet DESC")
+    fun sortWithFavoriteCabinetss(): Flow<List<Cabinet>>
+
     @Query("UPDATE Cabinet SET isFavorite = :isFavorite WHERE id = :cabinetId")
     suspend fun updateFavoriteStatus(cabinetId: Int,isFavorite:Boolean)
 
@@ -37,4 +40,5 @@ interface CabinetDao {
 
     @Query("SELECT COUNT(*) FROM note WHERE cabinetId = :cabinetId")
     fun getNoteCountByCabinetId(cabinetId: Int): Flow<Int>
+
 }

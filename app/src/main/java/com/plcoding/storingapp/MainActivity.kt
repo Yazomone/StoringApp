@@ -25,6 +25,7 @@ import com.plcoding.storingapp.data.NotesDatabase
 import com.plcoding.storingapp.Notes.AddNoteScreen
 import com.plcoding.storingapp.Cabinets.CabinetViewModel
 import com.plcoding.storingapp.Cabinets.MainScreen
+import com.plcoding.storingapp.Cabinets.SearchScreenAtMS
 import com.plcoding.storingapp.Cabinets.UpdateCabinetScreen
 import com.plcoding.storingapp.Camera.CameraScreen
 import com.plcoding.storingapp.Notes.NotesScreen
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
         ).fallbackToDestructiveMigration().build()
     }
 
-    private val NotesviewModel:NotesViewModel by viewModels<NotesViewModel>(
+    private val NotesViewModel:NotesViewModel by viewModels<NotesViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory{
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val cabinetState by CabinetViewModel.state.collectAsState()
-                    val noteState by NotesviewModel.state.collectAsState()
+                    val noteState by NotesViewModel.state.collectAsState()
                     val navController = rememberNavController()
 
                     NavHost(navController = navController, startDestination = "MainScreen") {
@@ -90,7 +91,7 @@ class MainActivity : ComponentActivity() {
                             NotesScreen(
                                 state = noteState,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent,
+                                onEvent = NotesViewModel::onEvent,
                                 cabinetId,
                                 cabinetName
                             )
@@ -107,16 +108,27 @@ class MainActivity : ComponentActivity() {
                             AddNoteScreen(
                                 state = noteState,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent,
-                                viewModel = NotesviewModel,
+                                onEvent = NotesViewModel::onEvent,
+                                viewModel = NotesViewModel,
                                 cabinetId
                             )
                         }
-                        composable("SearchScreen"){
+                        composable("SearchScreenAtMS"){
+                            SearchScreenAtMS(
+                                noteState = noteState,
+                                cabinetState = cabinetState,
+                                navController = navController,
+                                onEvent = NotesViewModel::onEvent,
+                                viewModel = NotesViewModel
+                            )
+                        }
+                        composable("SearchScreen/{cabinetId}"){backStackEntry ->
+                            val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
                             SearchScreen(
                                 state = noteState,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent
+                                onEvent = NotesViewModel::onEvent,
+                                cabinetId = cabinetId
                             )
                         }
                         composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}") { backStackEntry ->
@@ -135,7 +147,7 @@ class MainActivity : ComponentActivity() {
                                 cabinetId,
                                 noteAmount,
                                 navController = navController,
-                                onEvent = NotesviewModel::onEvent
+                                onEvent = NotesViewModel::onEvent
                             )
                         }
                         composable("UpdateCabinetScreen/{id}/{cabinetName}/{cabinetDescription}/{dateAddedCabinet}") { backStackEntry ->
@@ -155,7 +167,7 @@ class MainActivity : ComponentActivity() {
                         composable("CameraPermission"){
                             CameraPermission(
                                 navController = navController,
-                                viewModel = NotesviewModel
+                                viewModel = NotesViewModel
                             )
                         }
                     }

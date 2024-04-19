@@ -96,7 +96,7 @@ fun UpdateDataScreen (
                             state.nodeAmount.value
                         )
                     )
-                    navController.popBackStack()
+                    navController.navigate("NotesScreen/${cabinetId.toInt()}/${updatedTitle}")
                 }
             }) {
                 Icon(imageVector = Icons.Rounded.Check,
@@ -155,7 +155,6 @@ fun UpdateDataScreen (
 
             Column (
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxSize()
             ) {
                 LaunchedEffect(key1 = noteAmount) {

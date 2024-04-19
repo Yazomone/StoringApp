@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Cabinets
 
+import android.icu.lang.UCharacter.VerticalOrientation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,16 +9,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Launch
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Inventory
 import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material.icons.rounded.Launch
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
@@ -48,6 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.plcoding.storingapp.Notes.NotesEvent
+import com.plcoding.storingapp.R
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -70,7 +80,9 @@ fun MainScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
 
-                IconButton(onClick = { onEvent(CabinetEvent.SortCabinets) }) {
+                IconButton(onClick = {
+
+                }) {
                     Icon(
                         imageVector = Icons.Rounded.Settings,
                         contentDescription = "Settings",
@@ -81,7 +93,7 @@ fun MainScreen(
                 Spacer(Modifier.weight(1f))
 
                 IconButton(onClick = {
-                    navController.navigate("SearchScreen")
+                    navController.navigate("SearchScreenAtMS")
                 }) {
                     Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search note")
                 }
@@ -115,6 +127,9 @@ fun MainScreen(
                     viewModel= viewModel
                 )
             }
+            item {
+                Spacer(modifier = Modifier.height(50.dp)) // 調整這裡的高度以改變額外空白空間的大小
+            }
         }
     }
 }
@@ -146,58 +161,98 @@ fun CabinetItem(
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ){
+
+        Icon(
+            imageVector = Icons.Rounded.Inventory2,
+            contentDescription = "Favorite",
+            modifier = Modifier.size(40.dp),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+
         Column(
             modifier = Modifier.weight(1f)
         ) {
 
-            Text(
-                text = state.cabinets[index].cabinetName,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text = state.cabinets[index].cabinetName,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                if (state.cabinets[index].isFavorite){
+                    Icon(
+                        imageVector = Icons.Rounded.Bookmark,
+                        contentDescription = "Favorite",
+                        modifier = Modifier.size(25.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = state.cabinets[index].cabinetDescription,
+                text = "物品種類: ${itemCount.value}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
-            if(info.value){
-                Text(
-                    text = "物品種類: ${itemCount.value}",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
 
-                Text(
-                    text = "創建日期:${createTime.format(state.cabinets[index].dateAddedCabinet)}",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+            Spacer(modifier = Modifier.height(10.dp))
+
+
+            if(info.value){
+                Column {
+                    Text(
+                        text = "創建日期:${createTime.format(state.cabinets[index].dateAddedCabinet)}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+                    Text(
+                        text = state.cabinets[index].cabinetDescription,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+
+                }
+
             }
 
         }
-        IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
-            Icon(
-                imageVector = Icons.Rounded.Inventory2,
-                contentDescription = "More options",
-                modifier = Modifier.size(35.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+
+
+
+        Row{
+            IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.Launch,
+                    contentDescription = "More options",
+                    modifier = Modifier
+                        .size(30.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            IconButton(onClick = { expanded.value = !expanded.value }) {
+                Icon(
+                    imageVector = Icons.Rounded.MoreVert,
+                    contentDescription = "More options",
+                    modifier = Modifier
+
+                        .size(35.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
-        IconButton(onClick = { expanded.value = !expanded.value }) {
-            Icon(
-                imageVector = Icons.Rounded.MoreVert,
-                contentDescription = "More options",
-                modifier = Modifier.size(35.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
+
     }
     if(expanded.value){
         Row(
@@ -227,7 +282,7 @@ fun CabinetItem(
 
             IconButton(
                 onClick = {
-                    isFavorite.value = !isFavorite.value
+                    isFavorite.value = !state.cabinets[index].isFavorite
                     onEvent(CabinetEvent.FavoriteCabinet(state.cabinets[index].id,isFavorite))
 
                 },Modifier.padding(8.dp)
@@ -239,7 +294,7 @@ fun CabinetItem(
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-            }//有點問題
+            }
 
             DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
                 onEvent(CabinetEvent.DeleteCabinet(state.cabinets[index]))
@@ -299,5 +354,11 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
                 }
             }
         )
+    }
+}
+@Composable
+fun RefreshButton(onRefresh: () -> Unit) {
+    Button(onClick = { onRefresh() }) {
+        Text("重新整理")
     }
 }

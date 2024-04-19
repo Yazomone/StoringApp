@@ -32,11 +32,7 @@ class CabinetViewModel(
         val sortedCabinets = favoriteCabinets.combine(nonFavoriteCabinets) { favoriteCabinets, nonFavoriteCabinets ->
             favoriteCabinets + nonFavoriteCabinets
         }
-        if (!sort) {
-            sortedCabinets
-        } else {
-            cabinetdao.getCabinetOrderedByDateAdded()
-        }
+        sortedCabinets
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _searchCabinet = MutableStateFlow<List<Cabinet>>(emptyList())

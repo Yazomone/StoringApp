@@ -9,5 +9,5 @@ data class NotesState(
     val title: MutableState<String> = mutableStateOf(""),
     val description: MutableState<String> = mutableStateOf(""),
     val searchResults: List<Note> = emptyList(),
-    var nodeAmount:  MutableState<Int> = mutableStateOf(0)
+    var nodeAmount:  MutableState<Int> = mutableStateOf(1)
 )

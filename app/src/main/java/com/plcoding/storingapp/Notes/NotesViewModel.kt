@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.plcoding.storingapp.Cabinets.CabinetEvent
 import com.plcoding.storingapp.data.Note
 import com.plcoding.storingapp.data.NoteDao
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,6 +38,10 @@ class NotesViewModel(
             val existingNote = noteDoa.findDuplicateTitle(cabinetId, title).first()
             isTitleDuplicate.value = existingNote.isNotEmpty()
         }
+    }
+
+    fun getCabinetName(cabinetId: Int): Flow<String> {
+        return noteDoa.getCabinetById(cabinetId).map { it }
     }
 
     private val currentCabinetId = MutableStateFlow(0)
@@ -74,7 +81,6 @@ class NotesViewModel(
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
                     noteDoa.deleteNote(event.note)
-                    _searchResults.value = noteDoa.searchNotes(_searchResults.value.joinToString(" ") { it.title })
 
                 }
             }
@@ -103,6 +109,16 @@ class NotesViewModel(
             is NotesEvent.SearchNote -> {
                 val query = event.query
                 viewModelScope.launch {
+                    delay(100)
+                    _searchResults.value = noteDoa.searchNotes(query,event.cabinetId)
+
+                }
+            }
+
+            is NotesEvent.SearchCabinet -> {
+                val query = event.query
+                viewModelScope.launch {
+                    delay(100)
                     _searchResults.value = noteDoa.searchNotes(query)
                 }
             }
@@ -130,6 +146,7 @@ class NotesViewModel(
 
             is NotesEvent.SetCabinetId -> {
                 setCabinetId(event.cabinetId)
+
             }
 
             NotesEvent.SortNotes -> {
