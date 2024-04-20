@@ -146,7 +146,7 @@ fun NotesScreen(
                     Text(
                         text = "櫃子裡沒東西~~",
                         fontSize = 20.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onBackground,
 
                     )
                 }
@@ -184,60 +184,66 @@ fun NoteItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Rounded.AttachFile,
-            contentDescription = "Favorite",
-            modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-
-        Spacer(modifier = Modifier.size(10.dp))
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
-
-            Text(
-                text = state.notes[index].title,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-
-            Text(
-                text = "物品數量: ${state.notes[index].nodeAmount}",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-            if(info.value){
-                Text(
-                    text = state.notes[index].description,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Rounded.AttachFile,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
-                Text(
-                    text = "創建日期:${createTime.format(state.notes[index].dateAdded)}",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                Spacer(modifier = Modifier.size(10.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = state.notes[index].title,
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "物品數量: ${state.notes[index].nodeAmount}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+                IconButton(onClick = { expanded.value = !expanded.value }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = "More options",
+                        modifier = Modifier.size(35.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
 
-        }
+            if(info.value){
+                Spacer(modifier = Modifier.height(10.dp))
+                Column {
+                    Text(
+                        text = "創建日期:${createTime.format(state.notes[index].dateAdded)}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
 
-        IconButton(onClick = { expanded.value = !expanded.value }) {
-            Icon(
-                imageVector = Icons.Rounded.MoreVert,
-                contentDescription = "More options",
-                modifier = Modifier.size(35.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+                    Text(
+                        text = state.notes[index].description,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
         }
-
     }
 
     if (expanded.value){
@@ -304,7 +310,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text("確認刪除") },
+            title = { Text("注意!") },
             text = { Text("您確定要刪除這個物品嗎？") },
             confirmButton = {
                 Button(
@@ -314,7 +320,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
-                    Text("確認", color = Color.White)
+                    Text("確認", color = MaterialTheme.colorScheme.onBackground)
                 }
             },
             dismissButton = {

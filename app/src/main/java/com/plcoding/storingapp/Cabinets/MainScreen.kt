@@ -164,51 +164,72 @@ fun CabinetItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-
-        Icon(
-            imageVector = Icons.Rounded.Inventory2,
-            contentDescription = "Favorite",
-            modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-        Spacer(modifier = Modifier.size(10.dp))
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
-
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = state.cabinets[index].cabinetName,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Inventory2,
+                    contentDescription = "Inventory",
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                if (state.cabinets[index].isFavorite){
+
+                Spacer(modifier = Modifier.size(10.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (state.cabinets[index].isFavorite) {
+                            Icon(
+                                imageVector = Icons.Rounded.Bookmark,
+                                contentDescription = "Favorite",
+                                modifier = Modifier.size(25.dp),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                        Text(
+                            text = state.cabinets[index].cabinetName,
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "物品種類: ${itemCount.value}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+
+                IconButton(onClick = { navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}") }) {
                     Icon(
-                        imageVector = Icons.Rounded.Bookmark,
-                        contentDescription = "Favorite",
-                        modifier = Modifier.size(25.dp),
+                        imageVector = Icons.AutoMirrored.Rounded.Launch,
+                        contentDescription = "More options",
+                        modifier = Modifier
+                            .size(30.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                IconButton(onClick = { expanded.value = !expanded.value }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = "More options",
+                        modifier = Modifier.size(35.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "物品種類: ${itemCount.value}",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-
-            if(info.value){
+            if (info.value) {
+                Spacer(modifier = Modifier.height(10.dp))
                 Column {
                     Text(
                         text = "創建日期:${createTime.format(state.cabinets[index].dateAddedCabinet)}",
@@ -221,38 +242,9 @@ fun CabinetItem(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
-
-
                 }
-
-            }
-
-        }
-
-
-
-        Row{
-            IconButton(onClick = {navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}")}) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.Launch,
-                    contentDescription = "More options",
-                    modifier = Modifier
-                        .size(30.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            IconButton(onClick = { expanded.value = !expanded.value }) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreVert,
-                    contentDescription = "More options",
-                    modifier = Modifier
-
-                        .size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
             }
         }
-
     }
     if(expanded.value){
         Row(
@@ -284,7 +276,7 @@ fun CabinetItem(
                 onClick = {
                     isFavorite.value = !state.cabinets[index].isFavorite
                     onEvent(CabinetEvent.FavoriteCabinet(state.cabinets[index].id,isFavorite))
-
+                    expanded.value = false
                 },Modifier.padding(8.dp)
             ) {
 
@@ -322,6 +314,7 @@ fun CabinetItem(
 @Composable
 fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
     val openDialog = remember { mutableStateOf(false) }
+    val openSecondDialog = remember { mutableStateOf(false) }
 
     IconButton(onClick = { openDialog.value = true },Modifier.padding(8.dp)) {
         Icon(
@@ -335,21 +328,44 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text("確認刪除") },
+            title = { Text("注意!") },
             text = { Text("您確定要刪除這個櫃子嗎？") },
             confirmButton = {
                 Button(
                     onClick = {
-                        onDeleteConfirmed()
                         openDialog.value = false
+                        openSecondDialog.value = true
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
-                    Text("確認", color = Color.White)
+                    Text("確認", color = MaterialTheme.colorScheme.onBackground)
                 }
             },
             dismissButton = {
                 Button(onClick = { openDialog.value = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
+    if (openSecondDialog.value) {
+        AlertDialog(
+            onDismissRequest = { openSecondDialog.value = false },
+            title = { Text("注意!!!") },
+            text = { Text("刪除這個櫃子會導致櫃子裡的物品全部遺失喔") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDeleteConfirmed()
+                        openSecondDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("確認", color = MaterialTheme.colorScheme.onBackground)
+                }
+            },
+            dismissButton = {
+                Button(onClick = { openSecondDialog.value = false }) {
                     Text("取消")
                 }
             }

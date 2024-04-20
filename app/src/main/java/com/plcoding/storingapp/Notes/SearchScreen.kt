@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +64,16 @@ fun SearchScreen (
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ){
+
     val searchQuery = remember { mutableStateOf("")}
+    val showEmptySearch = remember { mutableStateOf(false) }
+    LaunchedEffect(searchQuery.value) {
+        showEmptySearch.value = false
+        delay(100)
+        if (searchQuery.value.isNotEmpty()) {
+            showEmptySearch.value = true
+        }
+    }
 
     Scaffold (
         topBar = {
@@ -106,7 +116,6 @@ fun SearchScreen (
             }
         }
     ){ paddingValues ->
-        Log.d("state.searchResults.isEmpty()",state.searchResults.toString())
 
         LazyColumn(
             contentPadding = paddingValues,
@@ -124,30 +133,27 @@ fun SearchScreen (
                     searchQuery = searchQuery
                 )
             }
-            if (state.searchResults.isEmpty() && searchQuery.value.isNotEmpty()) {
-                item {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(5.dp),
-                        ) {
-                            Image(
-                                modifier = Modifier.size(150.dp),
-                                painter = painterResource(id = R.drawable.confuseface),
-                                contentDescription = "描述"
-                            )
-                            Text(
-                                text = "咦?這裡怎麼沒東西???",
-                                fontSize = 20.sp,
-                                color = Color.Gray,
-                            )//無法水平致中
-                        }
-                    }
+        }
+        if (showEmptySearch.value && state.searchResults.isEmpty()) {
+            Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(5.dp),
+                ) {
+                    Image(
+                        modifier = Modifier.size(200.dp),
+                        painter = painterResource(id = R.drawable.confuseface),
+                        contentDescription = "描述"
+                    )
+                    Text(
+                        text = "咦?這裡怎麼沒東西???",
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
                 }
-
             }
         }
     }
@@ -260,8 +266,7 @@ fun SearchItem(
             DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed = {
                 onEvent(NotesEvent.DeleteNote(note))
                 onEvent(NotesEvent.SearchNote(searchQuery.value,note.cabinetId))
-            }
-            )
+            })
 
             IconButton(
                 onClick = {
@@ -297,7 +302,7 @@ fun DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed: () -> Un
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text("確認刪除") },
+            title = { Text("注意!") },
             text = { Text("您確定要刪除這個物品嗎？") },
             confirmButton = {
                 Button(
@@ -307,7 +312,7 @@ fun DeleteButtonWithConfirmationDialoginSearchScreen(onDeleteConfirmed: () -> Un
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
-                    Text("確認", color = Color.White)
+                    Text("確認", color = MaterialTheme.colorScheme.onBackground)
                 }
             },
             dismissButton = {
