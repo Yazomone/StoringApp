@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.plcoding.storingapp.Notes.NotesEvent
 
 @Composable
 fun UpdateCabinetScreen(
@@ -40,12 +39,14 @@ fun UpdateCabinetScreen(
     cabinetName:String,
     cabinetDescription:String,
     dateAddedCabinet:String,
+    isFavorite:String,
     navController: NavController,
     onEvent: (CabinetEvent) -> Unit
 ){
     var cabinetNameEmpty by remember { mutableStateOf(false) }
     var updatedcabinetName by remember { mutableStateOf(cabinetName) }
     var updatedcabinetDescription by remember { mutableStateOf(cabinetDescription) }
+    var updatedisFavorite by remember { mutableStateOf(isFavorite) }
     Scaffold (
         topBar = {
             Row(
@@ -72,16 +73,13 @@ fun UpdateCabinetScreen(
                     if (updatedcabinetDescription.isEmpty()){
                         updatedcabinetDescription = "無敘述"
                     }
-                    Log.d("id",id)
-                    Log.d("updatedcabinetName",updatedcabinetName)
-                    Log.d("updatedcabinetDescription",updatedcabinetDescription)
-                    Log.d("dateAddedCabinet",dateAddedCabinet)
                     onEvent(
                         CabinetEvent.UpdateCabinet(
                             id.toInt(),
                             updatedcabinetName,
                             updatedcabinetDescription,
-                            dateAddedCabinet.toLong()
+                            dateAddedCabinet.toLong(),
+                            updatedisFavorite.toBoolean()
                         )
                     )
                     navController.popBackStack()

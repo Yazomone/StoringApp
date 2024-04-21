@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.plcoding.storingapp.R
 
 @Composable
 fun UpdateDataScreen (
@@ -53,6 +54,7 @@ fun UpdateDataScreen (
     dateAdded: String,
     cabinetId:String,
     noteAmount:String,
+    cabinetName:String,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ){
@@ -96,7 +98,7 @@ fun UpdateDataScreen (
                             state.nodeAmount.value
                         )
                     )
-                    navController.navigate("NotesScreen/${cabinetId.toInt()}/${updatedTitle}")
+                    navController.navigate("NotesScreen/${cabinetId}/${cabinetName}")
                 }
             }) {
                 Icon(imageVector = Icons.Rounded.Check,

@@ -89,7 +89,7 @@ fun NotesScreen(
 
                 IconButton(onClick = {
                     Log.d("cabinetId",cabinetId.toString())
-                    navController.navigate("SearchScreen/${cabinetId}")
+                    navController.navigate("SearchScreen/${cabinetId}/${cabinetName}")
                 }) {
                     Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search note")
                 }
@@ -127,6 +127,7 @@ fun NotesScreen(
                     NoteItem(
                         state = state,
                         index = index,
+                        cabinetName = cabinetName,
                         cabinetId = cabinetId,
                         navController = navController,
                         onEvent = onEvent
@@ -162,6 +163,7 @@ fun NoteItem(
     state: NotesState,
     cabinetId: String,
     index: Int,
+    cabinetName: String,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ) {
@@ -262,7 +264,7 @@ fun NoteItem(
                     noteDescription.value = state.notes[index].description
                     dateAdded.value = state.notes[index].dateAdded.toString()
                     noteAmount.value = state.notes[index].nodeAmount
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}/${noteAmount.value}")
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}/${noteAmount.value}/${cabinetName}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(

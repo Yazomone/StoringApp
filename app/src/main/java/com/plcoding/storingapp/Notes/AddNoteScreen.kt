@@ -214,13 +214,15 @@ fun AddNoteScreen (
 
 @Composable
 fun Counter( nodeAmount : MutableState<Int>) {
+    var nodeCount by remember { mutableStateOf(1) }
+    nodeAmount.value = nodeCount
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
         Button(
-            onClick = { if (nodeAmount.value > 1) nodeAmount.value -- },
+            onClick = { if (nodeCount > 1) nodeCount -- },
             modifier = Modifier.padding(16.dp)
         ) {
             Text("-")
@@ -230,11 +232,11 @@ fun Counter( nodeAmount : MutableState<Int>) {
                 .width(90.dp)
                 .wrapContentWidth(unbounded = false)
                 .padding(16.dp),
-            value = nodeAmount.value.toString(),
+            value = nodeCount.toString(),
             onValueChange = {
                 if (it.matches(Regex("\\d*"))){
                     nodeAmount.value = it.toIntOrNull() ?: 1
-                    nodeAmount.value = if (nodeAmount.value > 100) 100 else nodeAmount.value
+                    nodeAmount.value = if (nodeCount > 100) 100 else nodeCount
                 }
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -246,7 +248,7 @@ fun Counter( nodeAmount : MutableState<Int>) {
             shape = RoundedCornerShape(10.dp)
         )
         Button(
-            onClick = { nodeAmount.value ++ },
+            onClick = { nodeCount ++ },
             modifier = Modifier.padding(16.dp)
         ) {
             Text("+")

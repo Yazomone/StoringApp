@@ -1,6 +1,7 @@
 package com.plcoding.storingapp.Cabinets
 
 import android.icu.lang.UCharacter.VerticalOrientation
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,16 +81,16 @@ fun MainScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
 
-                IconButton(onClick = {
-
-                }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Settings,
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+//                IconButton(onClick = {
+//
+//                }) {
+//                    Icon(
+//                        imageVector = Icons.Rounded.Settings,
+//                        contentDescription = "Settings",
+//                        modifier = Modifier.size(35.dp),
+//                        tint = MaterialTheme.colorScheme.onPrimary
+//                    )
+//                }
                 Spacer(Modifier.weight(1f))
 
                 IconButton(onClick = {
@@ -147,11 +148,11 @@ fun CabinetItem(
     val cabinetName = rememberSaveable { mutableStateOf("") }
     val cabinetDescription = rememberSaveable { mutableStateOf("") }
     val dateAddedCabinet = rememberSaveable { mutableStateOf("") }
+    val isFavorite = rememberSaveable { mutableStateOf(false) }
 
     val expanded = remember { mutableStateOf(false) }
     val info = remember { mutableStateOf(false) }
     val createTime = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
-    val isFavorite = remember { mutableStateOf(false) }
 
     val itemCount = viewModel.getItemCountForCabinet(state.cabinets[index].id).collectAsState(initial = 0)
 
@@ -261,7 +262,8 @@ fun CabinetItem(
                     cabinetName.value = state.cabinets[index].cabinetName
                     cabinetDescription.value = state.cabinets[index].cabinetDescription
                     dateAddedCabinet.value = state.cabinets[index].dateAddedCabinet.toString()
-                    navController.navigate("UpdateCabinetScreen/${id.value}/${cabinetName.value}/${cabinetDescription.value}/${dateAddedCabinet.value}")
+                    isFavorite.value = state.cabinets[index].isFavorite
+                    navController.navigate("UpdateCabinetScreen/${id.value}/${cabinetName.value}/${cabinetDescription.value}/${dateAddedCabinet.value}/${isFavorite.value.toString()}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(

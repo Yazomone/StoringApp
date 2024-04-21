@@ -92,7 +92,8 @@ class CabinetViewModel(
                     id = event.id,
                     cabinetName = event.updatedCabinetName,
                     cabinetDescription = event.updatedCabinetDescription,
-                    dateAddedCabinet = event.dateAddedCabinet
+                    dateAddedCabinet = event.dateAddedCabinet,
+                    isFavorite = event.isFavorite
                 )
                 viewModelScope.launch {
                     cabinetdao.updateCabinet(cabinet)

@@ -61,6 +61,7 @@ import java.util.Locale
 fun SearchScreen (
     state: NotesState,
     cabinetId: String,
+    cabinetName:String,
     navController: NavController,
     onEvent: (NotesEvent) -> Unit
 ){
@@ -104,11 +105,6 @@ fun SearchScreen (
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Search
                     ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            searchQuery.value = ""
-                        }
-                    ),
                     shape = RoundedCornerShape(10.dp)
                 )
 
@@ -127,8 +123,10 @@ fun SearchScreen (
 
             items(state.searchResults.size) { index ->
                 SearchItem(
+                    state = state,
                     note = state.searchResults[index],
                     onEvent = onEvent,
+                    cabinetName = cabinetName,
                     navController = navController,
                     searchQuery = searchQuery
                 )
@@ -162,7 +160,9 @@ fun SearchScreen (
 
 @Composable
 fun SearchItem(
+    state: NotesState,
     note: Note,
+    cabinetName:String,
     navController: NavController,
     searchQuery: MutableState<String>,
     onEvent: (NotesEvent) -> Unit
@@ -181,57 +181,68 @@ fun SearchItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(12.dp)
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Rounded.AttachFile,
-            contentDescription = "Favorite",
-            modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
-
-            Text(
-                text = note.title,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = note.description,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-            if(info.value){
-                Text(
-                    text = "物品數量: ${note.nodeAmount}",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Rounded.AttachFile,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
-                Text(
-                    text = "創建日期:${createTime.format(note.dateAdded)}",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = note.title,
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = note.description,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+
+                IconButton(onClick = { expanded.value = !expanded.value }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = "More options",
+                        modifier = Modifier.size(35.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
 
-        }
 
-        IconButton(onClick = { expanded.value = !expanded.value }) {
-            Icon(
-                imageVector = Icons.Rounded.MoreVert,
-                contentDescription = "More options",
-                modifier = Modifier.size(35.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            if(info.value){
+                Spacer(modifier = Modifier.height(10.dp))
+                Column {
+                    Text(
+                        text = "物品數量: ${note.nodeAmount}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+
+                    Text(
+                        text = "創建日期:${createTime.format(note.dateAdded)}",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
         }
     }
 
@@ -251,8 +262,7 @@ fun SearchItem(
                     noteDescription.value = note.description
                     dateAdded.value = note.dateAdded.toString()
                     noteAmount.value = note.nodeAmount
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${note.cabinetId}/${noteAmount.value}")
-                    onEvent(NotesEvent.SearchNote(searchQuery.value,note.cabinetId))
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${note.cabinetId}/${noteAmount.value}/${cabinetName}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(

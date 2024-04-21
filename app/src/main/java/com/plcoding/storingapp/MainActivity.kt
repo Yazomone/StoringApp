@@ -122,22 +122,25 @@ class MainActivity : ComponentActivity() {
                                 viewModel = NotesViewModel
                             )
                         }
-                        composable("SearchScreen/{cabinetId}"){backStackEntry ->
+                        composable("SearchScreen/{cabinetId}/{cabinetName}"){backStackEntry ->
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
+                            val cabinetName = backStackEntry.arguments?.getString("cabinetName")?:""
                             SearchScreen(
                                 state = noteState,
                                 navController = navController,
                                 onEvent = NotesViewModel::onEvent,
+                                cabinetName = cabinetName,
                                 cabinetId = cabinetId
                             )
                         }
-                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}") { backStackEntry ->
+                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}/{cabinetName}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val description = backStackEntry.arguments?.getString("description") ?: ""
                             val dateAdded = backStackEntry.arguments?.getString("dateAdded") ?: ""
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId") ?: ""
                             val noteAmount = backStackEntry.arguments?.getString("noteAmount") ?: ""
+                            val cabinetName = backStackEntry.arguments?.getString("cabinetName")?:""
                             UpdateDataScreen(
                                 state = noteState,
                                 id,
@@ -145,21 +148,24 @@ class MainActivity : ComponentActivity() {
                                 description,
                                 dateAdded,
                                 cabinetId,
-                                noteAmount,
+                                noteAmount = noteAmount,
+                                cabinetName = cabinetName,
                                 navController = navController,
                                 onEvent = NotesViewModel::onEvent
                             )
                         }
-                        composable("UpdateCabinetScreen/{id}/{cabinetName}/{cabinetDescription}/{dateAddedCabinet}") { backStackEntry ->
+                        composable("UpdateCabinetScreen/{id}/{cabinetName}/{cabinetDescription}/{dateAddedCabinet}/{isFavorite}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val cabinetName = backStackEntry.arguments?.getString("cabinetName") ?: ""
                             val cabinetDescription = backStackEntry.arguments?.getString("cabinetDescription") ?: ""
                             val dateAddedCabinet = backStackEntry.arguments?.getString("dateAddedCabinet") ?: ""
+                            val isFavorite = backStackEntry.arguments?.getString("isFavorite") ?: ""
                             UpdateCabinetScreen(
                                 id,
                                 cabinetName,
                                 cabinetDescription,
                                 dateAddedCabinet,
+                                isFavorite,
                                 navController = navController,
                                 onEvent = CabinetViewModel::onEvent
                             )

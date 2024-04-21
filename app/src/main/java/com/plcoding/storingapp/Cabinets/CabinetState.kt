@@ -10,5 +10,4 @@ data class CabinetState(
     val cabinetDescription: MutableState<String> = mutableStateOf(""),
     val searchCabinet: List<Cabinet> = emptyList(),
     val isFavorite: MutableState<Boolean> = mutableStateOf(false)
-
 )

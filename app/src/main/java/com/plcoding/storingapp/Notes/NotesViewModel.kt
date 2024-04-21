@@ -50,11 +50,9 @@ class NotesViewModel(
     }
 
     private var notes = combine(isSortedByDateAdded, currentCabinetId) { sort, cabinetId ->
-        if (sort) {
-            noteDoa.getNotesOrderedByDateAdded(cabinetId)
-        } else {
-            noteDoa.getNotesOrderedByTitle(cabinetId)
-        }
+
+        noteDoa.getNotesOrderedByDateAdded(cabinetId)
+
     }.flatMapLatest { it }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _searchResults = MutableStateFlow<List<Note>>(emptyList())

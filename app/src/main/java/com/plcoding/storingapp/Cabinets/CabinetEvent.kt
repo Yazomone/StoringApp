@@ -24,7 +24,8 @@ sealed interface CabinetEvent {
         val id: Int,
         val updatedCabinetName: String,
         val updatedCabinetDescription: String,
-        val dateAddedCabinet: Long
+        val dateAddedCabinet: Long,
+        val isFavorite: Boolean
     ):CabinetEvent
 
     data class FavoriteCabinet(
