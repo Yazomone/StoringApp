@@ -62,7 +62,12 @@ fun UpdateCabinetScreen(
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-
+                Text(
+                    text = "櫃子修改",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
             }
         },
         floatingActionButton = {
@@ -113,7 +118,7 @@ fun UpdateCabinetScreen(
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Cabinet Name")
+                    Text(text = "櫃子名稱")
                 },
                 isError = cabinetNameEmpty,
             )
@@ -138,7 +143,7 @@ fun UpdateCabinetScreen(
                     updatedcabinetDescription = it
                 },
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = "櫃子種類")
                 }
 
             )

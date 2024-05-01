@@ -133,6 +133,9 @@ fun NotesScreen(
                         onEvent = onEvent
                     )
                 }
+                item {
+                    Spacer(modifier = Modifier.height(50.dp)) // 調整這裡的高度以改變額外空白空間的大小
+                }
             }
             if (state.notes.isEmpty()) {
                 Column(
@@ -239,7 +242,7 @@ fun NoteItem(
                     )
 
                     Text(
-                        text = state.notes[index].description,
+                        text = "物品敘述:${state.notes[index].description}",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -277,7 +280,7 @@ fun NoteItem(
 
             DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
                 onEvent(NotesEvent.DeleteNote(state.notes[index]))
-            })
+            },title=state.notes[index].title)
 
             IconButton(
                 onClick = {
@@ -297,7 +300,7 @@ fun NoteItem(
 }
 
 @Composable
-fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
+fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit,title:String) {
     val openDialog = remember { mutableStateOf(false) }
 
     IconButton(onClick = { openDialog.value = true },Modifier.padding(8.dp)) {
@@ -313,7 +316,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
             title = { Text("注意!") },
-            text = { Text("您確定要刪除這個物品嗎？") },
+            text = { Text("您確定要刪除${title}嗎？") },
             confirmButton = {
                 Button(
                     onClick = {

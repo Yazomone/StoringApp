@@ -105,7 +105,7 @@ fun SearchScreenAtMS (
                         }
                     ),
                     placeholder = {
-                        Text(text = "Search by item name")
+                        Text(text = "物品名稱搜尋")
                     },
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -201,7 +201,7 @@ fun SearchItem(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "(櫃子查詢結果如下)",
+                text = "(物品查詢結果如下)",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
@@ -258,7 +258,7 @@ fun SearchItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = note.description,
+                text = "物品數量:${note.nodeAmount}",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )

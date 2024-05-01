@@ -28,6 +28,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,8 +43,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.plcoding.storingapp.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun UpdateDataScreen (
@@ -56,9 +60,12 @@ fun UpdateDataScreen (
     noteAmount:String,
     cabinetName:String,
     navController: NavController,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (NotesEvent) -> Unit,
+    viewModel: NotesViewModel
 ){
     var titleEmpty by remember { mutableStateOf(false) }
+    val isTitleDuplicate by viewModel.isTitleDuplicate.collectAsState()
+    var DuplicateTitle by remember { mutableStateOf(false) }
     var updatedTitle by remember { mutableStateOf(title) }
     var updatedDescription by remember { mutableStateOf(description) }
     Scaffold (
@@ -76,29 +83,44 @@ fun UpdateDataScreen (
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-
+                Text(
+                    text = "物品修改",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
             }
         },
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
+
                 if (updatedTitle.isEmpty()) {
                     titleEmpty = true
                 } else {
-                    if (updatedDescription.isEmpty()) {
-                        updatedDescription = "無敘述"
+                    viewModel.viewModelScope.launch {
+                        viewModel.checkDuplicateTitle(updatedTitle,cabinetId.toInt())
+                        delay(100)
+                        if (isTitleDuplicate && updatedTitle != title) {
+                            DuplicateTitle = true
+                        } else {
+                            if (updatedDescription.isEmpty()) {
+                                updatedDescription = "無敘述"
+                            }
+                            onEvent(
+                                NotesEvent.UpdateNote(
+                                    id.toInt(),
+                                    updatedTitle,
+                                    updatedDescription,
+                                    dateAdded.toLong(),
+                                    cabinetId.toInt(),
+                                    state.nodeAmount.value
+                                )
+                            )
+                            navController.navigate("NotesScreen/${cabinetId}/${cabinetName}")
+                        }
                     }
-                    onEvent(
-                        NotesEvent.UpdateNote(
-                            id.toInt(),
-                            updatedTitle,
-                            updatedDescription,
-                            dateAdded.toLong(),
-                            cabinetId.toInt(),
-                            state.nodeAmount.value
-                        )
-                    )
-                    navController.navigate("NotesScreen/${cabinetId}/${cabinetName}")
+
                 }
             }) {
                 Icon(imageVector = Icons.Rounded.Check,
@@ -128,7 +150,7 @@ fun UpdateDataScreen (
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Name")
+                    Text(text = "物品名稱")
                 },
                 isError = titleEmpty,
             )
@@ -142,6 +164,16 @@ fun UpdateDataScreen (
                     textAlign = TextAlign.Center
                 )
             }
+            if (DuplicateTitle) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 0.dp),
+                    text = "物品標題已重複",
+                    color = Color.Red,
+                    textAlign = TextAlign.Center
+                )
+            }
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,7 +183,7 @@ fun UpdateDataScreen (
                     updatedDescription = it
                 },
                 placeholder = {
-                    Text(text = "description")
+                    Text(text = "物品敘述")
                 }
             )
 

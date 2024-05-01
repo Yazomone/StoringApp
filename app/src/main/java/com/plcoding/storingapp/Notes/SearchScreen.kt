@@ -105,6 +105,9 @@ fun SearchScreen (
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Search
                     ),
+                    placeholder = {
+                        Text(text = "物品名稱搜尋")
+                    },
                     shape = RoundedCornerShape(10.dp)
                 )
 
@@ -210,10 +213,11 @@ fun SearchItem(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = note.description,
+                        text = "物品數量: ${note.nodeAmount}",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
+
                 }
 
                 IconButton(onClick = { expanded.value = !expanded.value }) {
@@ -230,14 +234,15 @@ fun SearchItem(
             if(info.value){
                 Spacer(modifier = Modifier.height(10.dp))
                 Column {
+
                     Text(
-                        text = "物品數量: ${note.nodeAmount}",
+                        text = "創建日期:${createTime.format(note.dateAdded)}",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
 
                     Text(
-                        text = "創建日期:${createTime.format(note.dateAdded)}",
+                        text = "物品敘述:${note.description}",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )

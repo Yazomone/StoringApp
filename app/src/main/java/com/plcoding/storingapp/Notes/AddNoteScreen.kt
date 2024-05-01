@@ -81,7 +81,12 @@ fun AddNoteScreen (
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-
+                Text(
+                    text = "新增物品",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
             }
         },
         bottomBar = {
@@ -111,6 +116,7 @@ fun AddNoteScreen (
                             if (isTitleDuplicate) {
                                 DuplicateTitle = true
                             } else {
+                                DuplicateTitle = false
                                 if (state.description.value.isEmpty()){
                                     state.description.value = "無敘述"
                                 }
@@ -123,7 +129,6 @@ fun AddNoteScreen (
                                 navController.popBackStack()
                             }
                         }
-                        Log.d("isTitleDuplicate in add", isTitleDuplicate.toString())
                     }
                 }) {
                     Icon(imageVector = Icons.Rounded.Check,
@@ -181,7 +186,7 @@ fun AddNoteScreen (
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 0.dp),
-                    text = "標題已重複",
+                    text = "物品標題已重複",
                     color = Color.Red,
                     textAlign = TextAlign.Center
                 )

@@ -239,7 +239,7 @@ fun CabinetItem(
                     )
 
                     Text(
-                        text = state.cabinets[index].cabinetDescription,
+                        text = "櫃子種類:${ state.cabinets[index].cabinetDescription }",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -292,7 +292,8 @@ fun CabinetItem(
 
             DeleteButtonWithConfirmationDialog(onDeleteConfirmed = {
                 onEvent(CabinetEvent.DeleteCabinet(state.cabinets[index]))
-            })
+            },cabinetName=state.cabinets[index].cabinetName
+            )
 
             IconButton(
                 onClick = {
@@ -314,7 +315,7 @@ fun CabinetItem(
 
 
 @Composable
-fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
+fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit,cabinetName:String) {
     val openDialog = remember { mutableStateOf(false) }
     val openSecondDialog = remember { mutableStateOf(false) }
 
@@ -331,7 +332,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
             title = { Text("注意!") },
-            text = { Text("您確定要刪除這個櫃子嗎？") },
+            text = { Text("您確定要刪除${cabinetName}嗎？") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -354,7 +355,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
         AlertDialog(
             onDismissRequest = { openSecondDialog.value = false },
             title = { Text("注意!!!") },
-            text = { Text("刪除這個櫃子會導致櫃子裡的物品全部遺失喔") },
+            text = { Text("刪除櫃子將失去所有物品喔") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -372,11 +373,5 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit) {
                 }
             }
         )
-    }
-}
-@Composable
-fun RefreshButton(onRefresh: () -> Unit) {
-    Button(onClick = { onRefresh() }) {
-        Text("重新整理")
     }
 }

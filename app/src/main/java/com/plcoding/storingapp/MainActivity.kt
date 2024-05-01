@@ -151,7 +151,8 @@ class MainActivity : ComponentActivity() {
                                 noteAmount = noteAmount,
                                 cabinetName = cabinetName,
                                 navController = navController,
-                                onEvent = NotesViewModel::onEvent
+                                onEvent = NotesViewModel::onEvent,
+                                viewModel = NotesViewModel
                             )
                         }
                         composable("UpdateCabinetScreen/{id}/{cabinetName}/{cabinetDescription}/{dateAddedCabinet}/{isFavorite}") { backStackEntry ->

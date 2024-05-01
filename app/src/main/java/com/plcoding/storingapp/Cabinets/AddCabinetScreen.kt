@@ -56,7 +56,12 @@ fun AddCabinetScreen(
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-
+                Text(
+                    text = "新增櫃子",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
             }
         },
         floatingActionButton = {
@@ -103,7 +108,7 @@ fun AddCabinetScreen(
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Name")
+                    Text(text = "櫃子名稱")
                 },
                 isError = cabinetNameEmpty,
 
@@ -129,7 +134,7 @@ fun AddCabinetScreen(
                     state.cabinetDescription.value = it
                 },
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = "櫃子種類")
                 }
 
             )

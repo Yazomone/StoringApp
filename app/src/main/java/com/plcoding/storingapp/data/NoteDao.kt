@@ -18,7 +18,7 @@ interface NoteDao {
     @Update
     suspend fun updateNote(note: Note)
 
-    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY dateAdded")
+    @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY dateAdded DESC")
     fun getNotesOrderedByDateAdded(cabinetId: Int): Flow<List<Note>>
 
     @Query("SELECT * FROM note WHERE cabinetId = :cabinetId ORDER BY title ASC")
