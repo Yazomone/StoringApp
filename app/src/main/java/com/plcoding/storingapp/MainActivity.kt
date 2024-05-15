@@ -1,7 +1,6 @@
 package com.plcoding.storingapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,17 +16,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.plcoding.storingapp.Cabinets.AddCabinetScreen
+import com.plcoding.storingapp.Cabinets.CabinetScreen
 import com.plcoding.storingapp.Camera.CameraPermission
 import com.plcoding.storingapp.data.NotesDatabase
 import com.plcoding.storingapp.Notes.AddNoteScreen
 import com.plcoding.storingapp.Cabinets.CabinetViewModel
-import com.plcoding.storingapp.Cabinets.MainScreen
 import com.plcoding.storingapp.Cabinets.SearchScreenAtMS
 import com.plcoding.storingapp.Cabinets.UpdateCabinetScreen
-import com.plcoding.storingapp.Camera.CameraScreen
+import com.plcoding.storingapp.Main.MainScreen
 import com.plcoding.storingapp.Notes.NotesScreen
 import com.plcoding.storingapp.Notes.NotesViewModel
 import com.plcoding.storingapp.Notes.SearchScreen
@@ -79,6 +76,14 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "MainScreen") {
                         composable("MainScreen"){
                             MainScreen(
+                                state = cabinetState,
+                                navController = navController,
+                                onEvent = CabinetViewModel::onEvent,
+                                viewModel= CabinetViewModel
+                            )
+                        }
+                        composable("CabinetScreen"){
+                            CabinetScreen(
                                 state = cabinetState,
                                 navController = navController,
                                 onEvent = CabinetViewModel::onEvent,

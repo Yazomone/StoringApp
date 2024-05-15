@@ -76,7 +76,7 @@ fun NotesScreen(
             ) {
 
                 IconButton(onClick = {
-                    navController.navigate("MainScreen")
+                    navController.navigate("CabinetScreen")
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }

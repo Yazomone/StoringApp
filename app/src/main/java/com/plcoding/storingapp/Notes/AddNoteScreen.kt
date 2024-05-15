@@ -155,7 +155,7 @@ fun AddNoteScreen (
                 onValueChange = {
                     title = it
                     state.title.value = title
-                    if (it.isNotEmpty()) {
+                    if (title.isNotEmpty()) {
                         titleEmpty = false
                     }
 
@@ -165,7 +165,7 @@ fun AddNoteScreen (
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Name")
+                    Text(text = "物品名稱")
                 },
                 isError = titleEmpty,
 
@@ -201,7 +201,7 @@ fun AddNoteScreen (
                     state.description.value = it
                 },
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = "物品敘述")
                 }
             )
 

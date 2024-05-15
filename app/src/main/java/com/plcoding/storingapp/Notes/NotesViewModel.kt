@@ -71,7 +71,6 @@ class NotesViewModel(
         viewModelScope.launch {
             displayText.emit(text)
         }
-        Log.d("displayText",text)
     }
 
     fun onEvent(event: NotesEvent) {
