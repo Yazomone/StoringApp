@@ -193,7 +193,7 @@ fun CabinetItem(
                     )
                 }
 
-                IconButton(onClick = { navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}") }) {
+                IconButton(onClick = { navController.navigate("NotesScreen/${state.cabinets[index].id}/${state.cabinets[index].cabinetName}/${state.cabinets[index].cabinetDescription}") }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.Launch,
                         contentDescription = "More options",
@@ -221,7 +221,7 @@ fun CabinetItem(
                     )
 
                     Text(
-                        text = "櫃子種類:${ state.cabinets[index].cabinetDescription }",
+                        text = "櫃子物品種類:${ state.cabinets[index].cabinetDescription }",
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )

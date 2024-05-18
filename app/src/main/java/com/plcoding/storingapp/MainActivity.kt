@@ -76,10 +76,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "MainScreen") {
                         composable("MainScreen"){
                             MainScreen(
-                                state = cabinetState,
-                                navController = navController,
-                                onEvent = CabinetViewModel::onEvent,
-                                viewModel= CabinetViewModel
+                                navController = navController
                             )
                         }
                         composable("CabinetScreen"){
@@ -90,15 +87,17 @@ class MainActivity : ComponentActivity() {
                                 viewModel= CabinetViewModel
                             )
                         }
-                        composable("NotesScreen/{cabinetId}/{cabinetName}"){ backStackEntry ->
+                        composable("NotesScreen/{cabinetId}/{cabinetName}/{cabinetDescription}"){ backStackEntry ->
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId")?:""
                             val cabinetName = backStackEntry.arguments?.getString("cabinetName")?:""
+                            val cabinetDescription = backStackEntry.arguments?.getString("cabinetDescription")?:""
                             NotesScreen(
                                 state = noteState,
                                 navController = navController,
                                 onEvent = NotesViewModel::onEvent,
                                 cabinetId,
-                                cabinetName
+                                cabinetName,
+                                cabinetDescription
                             )
                         }
                         composable("AddCabinetScreen"){

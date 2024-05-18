@@ -17,14 +17,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.MenuBook
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AttachFile
+import androidx.compose.material.icons.rounded.Computer
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Fastfood
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Phonelink
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -61,7 +66,8 @@ fun NotesScreen(
     navController: NavController,
     onEvent: (NotesEvent) -> Unit,
     cabinetId: String,
-    cabinetName:String
+    cabinetName:String,
+    cabinetDescription:String
 ) {
     onEvent(NotesEvent.SetCabinetId(cabinetId.toInt()))
     Scaffold(
@@ -127,6 +133,7 @@ fun NotesScreen(
                     NoteItem(
                         state = state,
                         index = index,
+                        cabinetDescription = cabinetDescription,
                         cabinetName = cabinetName,
                         cabinetId = cabinetId,
                         navController = navController,
@@ -144,8 +151,8 @@ fun NotesScreen(
                 ) {
                     Image(
                         modifier = Modifier.size(150.dp),
-                        painter = painterResource(id = R.drawable.sadpic),  //
-                        contentDescription = "描述"  //
+                        painter = painterResource(id = R.drawable.sadpic),
+                        contentDescription = "描述"
                     )
                     Text(
                         text = "櫃子裡沒東西~~",
@@ -164,6 +171,7 @@ fun NotesScreen(
 @Composable
 fun NoteItem(
     state: NotesState,
+    cabinetDescription: String,
     cabinetId: String,
     index: Int,
     cabinetName: String,
@@ -195,12 +203,38 @@ fun NoteItem(
             Row (
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Icon(
-                    imageVector = Icons.Rounded.AttachFile,
-                    contentDescription = "Favorite",
-                    modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                when(cabinetDescription){
+                    "食物" -> Icon(
+                        imageVector = Icons.Rounded.Fastfood,
+                        contentDescription = "Icons",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    "書籍" -> Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.MenuBook,
+                        contentDescription = "Icons",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    "衣著" -> Icon(
+                        painter = painterResource(id = R.drawable.shirt),
+                        contentDescription = "Icons",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    "文具" -> Icon(
+                        painter = painterResource(id = R.drawable.stationery),
+                        contentDescription = "Icons",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    "其他" -> Icon(
+                        imageVector = Icons.Rounded.AttachFile,
+                        contentDescription = "Icons",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
 
                 Spacer(modifier = Modifier.size(10.dp))
 

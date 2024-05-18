@@ -2,15 +2,21 @@ package com.plcoding.storingapp.Cabinets
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +53,9 @@ fun UpdateCabinetScreen(
     var updatedcabinetName by remember { mutableStateOf(cabinetName) }
     var updatedcabinetDescription by remember { mutableStateOf(cabinetDescription) }
     var updatedisFavorite by remember { mutableStateOf(isFavorite) }
+    val cabinetTypes = listOf("食物", "書籍", "衣著", "文具", "電子用品", "其他") // Add your cabinet types here
+    var selectedCabinetType by remember { mutableStateOf(cabinetTypes[0]) }
+    var expanded by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             Row(
@@ -134,19 +143,45 @@ fun UpdateCabinetScreen(
                 )
             }
 
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = updatedcabinetDescription,
-                onValueChange = {
-                    updatedcabinetDescription = it
-                },
-                placeholder = {
-                    Text(text = "櫃子種類")
-                }
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable { expanded = true },
+                    value = updatedcabinetDescription,
+                    onValueChange = {
+                        updatedcabinetDescription = it
+                    },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = {  expanded = !expanded  }) {
+                            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Clear text")
+                        }
+                    },
+                    placeholder = {
+                        Text(text = "櫃子物品種類")
+                    }
 
-            )
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    cabinetTypes.forEach { type ->
+                        DropdownMenuItem(
+                            text = { Text(text = type) },
+                            onClick = {
+                                selectedCabinetType = type
+                                updatedcabinetDescription = type
+                                expanded = false
+                            })
+                    }
+                }
+            }
         }
     }
 }

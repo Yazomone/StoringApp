@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.Add
@@ -48,10 +49,7 @@ import com.plcoding.storingapp.Cabinets.CabinetViewModel
 
 @Composable
 fun MainScreen(
-    state: CabinetState,
-    navController: NavController,
-    onEvent:(CabinetEvent) -> Unit,
-    viewModel: CabinetViewModel
+    navController: NavController
 ){
     Scaffold(
         topBar = {
@@ -199,7 +197,7 @@ fun MainScreen(
 
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Settings,
+                                imageVector = Icons.Default.Notifications,
                                 contentDescription = "描述",
                                 modifier = Modifier
                                     .size(50.dp)
@@ -207,7 +205,7 @@ fun MainScreen(
                             )
                             Spacer(Modifier.height(5.dp))
                             Text(
-                                text = "設定",
+                                text = "提醒",
                                 fontSize = 25.sp,
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
