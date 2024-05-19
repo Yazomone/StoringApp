@@ -1,6 +1,7 @@
 package com.plcoding.storingapp.Cabinets
 
 import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,10 +39,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateCabinetScreen(
     id:String,
@@ -106,79 +112,110 @@ fun UpdateCabinetScreen(
             }
         }
     ) {paddingValues ->
-        Column (
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            TextField(
+                .background(Color(0xFFEBE2D9))
+        ){
+            Column (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = updatedcabinetName,
-                onValueChange = {
-                    updatedcabinetName = it
-                    if (it.isNotEmpty()) {
-                        cabinetNameEmpty = false
-                    }
-                },
-                textStyle = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 17.sp
-                ),
-                placeholder = {
-                    Text(text = "櫃子名稱")
-                },
-                isError = cabinetNameEmpty,
-            )
-
-            if (cabinetNameEmpty) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 0.dp),
-                    text = "櫃子名稱不能為空白",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()) {
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                        .clickable { expanded = true },
-                    value = updatedcabinetDescription,
+                        .padding(16.dp),
+                    value = updatedcabinetName,
                     onValueChange = {
-                        updatedcabinetDescription = it
-                    },
-                    readOnly = true,
-                    trailingIcon = {
-                        IconButton(onClick = {  expanded = !expanded  }) {
-                            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Clear text")
+                        updatedcabinetName = it
+                        if (it.isNotEmpty()) {
+                            cabinetNameEmpty = false
                         }
                     },
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
                     placeholder = {
-                        Text(text = "櫃子物品種類")
-                    }
-
+                        Text(text = "櫃子名稱")
+                    },
+                    isError = cabinetNameEmpty,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF), // 背景顏色
+                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                    )
                 )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    cabinetTypes.forEach { type ->
-                        DropdownMenuItem(
-                            text = { Text(text = type) },
-                            onClick = {
-                                selectedCabinetType = type
-                                updatedcabinetDescription = type
-                                expanded = false
-                            })
+
+                if (cabinetNameEmpty) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp),
+                        text = "櫃子名稱不能為空白",
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()) {
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .clickable { expanded = true },
+                        value = updatedcabinetDescription,
+                        onValueChange = {
+                            updatedcabinetDescription = it
+                        },
+                        readOnly = true,
+                        textStyle = TextStyle(
+                            fontSize = 17.sp,
+                            color = Color(0xFF383838)
+                        ),
+                        trailingIcon = {
+                            IconButton(onClick = {  expanded = !expanded  }) {
+                                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Clear text")
+                            }
+                        },
+                        placeholder = {
+                            Text(text = "櫃子物品種類")
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color(0xFFFFFFFF), // 背景顏色
+                            disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                            disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                            errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                        )
+                    )
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        cabinetTypes.forEach { type ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = type,
+                                        fontSize = 17.sp,
+                                    )},
+                                onClick = {
+                                    selectedCabinetType = type
+                                    updatedcabinetDescription = type
+                                    expanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }

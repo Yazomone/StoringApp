@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Main
 
+import android.content.res.Resources.Theme
 import android.widget.HorizontalScrollView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -80,7 +82,8 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Padding),
+                .padding(Padding)
+                .background(Color(0xFFEBE2D9)),
         ) {
             Column(
                 modifier = Modifier
@@ -98,7 +101,8 @@ fun MainScreen(
                             .align(Alignment.CenterVertically)
                             .height(300.dp),
                         shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
+                        colors = buttonColors(containerColor = Color(0xFFFFFEFE)),
+                       // border = BorderStroke(10.dp, MaterialTheme.colorScheme.primary)
                     ) {
                         Column(
 
@@ -128,7 +132,8 @@ fun MainScreen(
                             .fillMaxWidth(1f)
                             .height(300.dp),
                         shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
+                        colors = buttonColors(containerColor = Color(0xFFFFFEFE)),
+                        //border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
                     ) {
                         Column(
 
@@ -162,7 +167,8 @@ fun MainScreen(
                             .fillMaxWidth(0.5f)
                             .height(150.dp),
                         shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
+                        colors = buttonColors(containerColor = Color(0xFFFFFEFE)),
+                        //border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
                     ) {
                         Column(
 
@@ -191,7 +197,8 @@ fun MainScreen(
                             .fillMaxWidth(1f)
                             .height(150.dp),
                         shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
+                        colors = buttonColors(containerColor = Color(0xFFFFFEFE)),
+                        //border = BorderStroke(10.dp, MaterialTheme.colorScheme.primaryContainer)
                     ) {
                         Column(
 

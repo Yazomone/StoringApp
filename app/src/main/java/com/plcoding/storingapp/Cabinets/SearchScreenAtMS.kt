@@ -114,48 +114,53 @@ fun SearchScreenAtMS (
             }
         }
     ){ paddingValues ->
-
-        LazyColumn(
-            contentPadding = paddingValues,
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            items(noteState.searchResults.size) { index ->
-                SearchItem(
-                    note = noteState.searchResults[index],
-                    viewModel = viewModel,
-                    navController = navController,
-                    showEmptySearch = showEmptySearch,
-                    onEvent = onEvent
-                )
-            }
-        }
-
-        if (showEmptySearch.value && noteState.searchResults.isEmpty()) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
+                .background(Color(0xFFEBE2D9))
+        ){
+            LazyColumn(
+                contentPadding = paddingValues,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(5.dp),
-                ) {
-                    Image(
-                        modifier = Modifier.size(200.dp),
-                        painter = painterResource(id = R.drawable.confuseface),
-                        contentDescription = "描述"
-                    )
-                    Text(
-                        text = "咦?這裡怎麼沒東西???",
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+
+                items(noteState.searchResults.size) { index ->
+                    SearchItem(
+                        note = noteState.searchResults[index],
+                        viewModel = viewModel,
+                        navController = navController,
+                        showEmptySearch = showEmptySearch,
+                        onEvent = onEvent
                     )
                 }
             }
+
+            if (showEmptySearch.value && noteState.searchResults.isEmpty()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(5.dp),
+                    ) {
+                        Image(
+                            modifier = Modifier.size(200.dp),
+                            painter = painterResource(id = R.drawable.confuseface),
+                            contentDescription = "描述"
+                        )
+                        Text(
+                            text = "咦?這裡怎麼沒東西???",
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                        )
+                    }
+                }
+            }
         }
+
     }
 }
 
@@ -174,7 +179,7 @@ fun SearchItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color(0xFFFFFEFE))
             .padding(top = 15.dp, bottom = 15.dp, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -182,7 +187,7 @@ fun SearchItem(
             imageVector = Icons.Rounded.Inventory2,
             contentDescription = "Favorite",
             modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            tint = MaterialTheme.colorScheme.primaryContainer
         )
 
         Spacer(modifier = Modifier.size(10.dp))
@@ -195,7 +200,7 @@ fun SearchItem(
                 text = cabinetName.value,
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.secondaryContainer
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -203,7 +208,7 @@ fun SearchItem(
             Text(
                 text = "(物品查詢結果如下)",
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.secondaryContainer
             )
 
         }
@@ -218,7 +223,7 @@ fun SearchItem(
                 imageVector = Icons.AutoMirrored.Rounded.Launch,
                 contentDescription = "More options",
                 modifier = Modifier.size(35.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                tint = MaterialTheme.colorScheme.primaryContainer
             )
         }
 
@@ -230,7 +235,7 @@ fun SearchItem(
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 15.dp, start = 12.dp, end = 12.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer),
+            .background(Color(0xFFFFFAF3)),
 
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -238,7 +243,7 @@ fun SearchItem(
             imageVector = Icons.Rounded.AttachFile,
             contentDescription = "Favorite",
             modifier = Modifier.size(40.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            tint = MaterialTheme.colorScheme.primaryContainer
         )
 
         Spacer(modifier = Modifier.size(10.dp))
@@ -252,7 +257,7 @@ fun SearchItem(
                 text = note.title,
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.secondaryContainer
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -260,7 +265,7 @@ fun SearchItem(
             Text(
                 text = "物品數量:${note.nodeAmount}",
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.secondaryContainer
             )
         }
     }

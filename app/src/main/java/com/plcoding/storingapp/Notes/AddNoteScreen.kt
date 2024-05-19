@@ -50,6 +50,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteScreen (
     state: NotesState,
@@ -140,80 +141,105 @@ fun AddNoteScreen (
         },
 
     ) {paddingValues ->
-
-        Column (
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = title,
-
-                onValueChange = {
-                    title = it
-                    state.title.value = title
-                    if (title.isNotEmpty()) {
-                        titleEmpty = false
-                    }
-
-                },
-                textStyle = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 17.sp
-                ),
-                placeholder = {
-                    Text(text = "物品名稱")
-                },
-                isError = titleEmpty,
-
-            )
-
-            if (titleEmpty) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 0.dp),
-                    text = "標題不能為空白",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-            if (DuplicateTitle) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 0.dp),
-                    text = "物品標題已重複",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = state.description.value,
-                onValueChange = {
-                    state.description.value = it
-                },
-                placeholder = {
-                    Text(text = "物品敘述")
-                }
-            )
-
+                .background(Color(0xFFEBE2D9))
+        ){
             Column (
                 modifier = Modifier
+                    .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                Counter(
-                    nodeAmount = state.nodeAmount
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = title,
+
+                    onValueChange = {
+                        title = it
+                        state.title.value = title
+                        if (title.isNotEmpty()) {
+                            titleEmpty = false
+                        }
+
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    placeholder = {
+                        Text(text = "物品名稱")
+                    },
+                    isError = titleEmpty,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF), // 背景顏色
+                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                    )
+
                 )
+
+                if (titleEmpty) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp),
+                        text = "標題不能為空白",
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                if (DuplicateTitle) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp),
+                        text = "物品標題已重複",
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = state.description.value,
+                    onValueChange = {
+                        state.description.value = it
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    placeholder = {
+                        Text(text = "物品敘述")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF), // 背景顏色
+                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                    )
+                )
+
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Counter(
+                        nodeAmount = state.nodeAmount
+                    )
+                }
             }
         }
+
     }
 }
 

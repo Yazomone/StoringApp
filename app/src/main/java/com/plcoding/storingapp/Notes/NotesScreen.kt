@@ -117,7 +117,9 @@ fun NotesScreen(
     ) { paddingValues ->
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .background(Color(0xFFEBE2D9))
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
 
@@ -193,7 +195,7 @@ fun NoteItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color(0xFFFFFEFE))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -208,31 +210,31 @@ fun NoteItem(
                         imageVector = Icons.Rounded.Fastfood,
                         contentDescription = "Icons",
                         modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                     "書籍" -> Icon(
                         imageVector = Icons.AutoMirrored.Rounded.MenuBook,
                         contentDescription = "Icons",
                         modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                     "衣著" -> Icon(
                         painter = painterResource(id = R.drawable.shirt),
                         contentDescription = "Icons",
                         modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                     "文具" -> Icon(
                         painter = painterResource(id = R.drawable.stationery),
                         contentDescription = "Icons",
                         modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                     "其他" -> Icon(
                         imageVector = Icons.Rounded.AttachFile,
                         contentDescription = "Icons",
                         modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
 
@@ -245,7 +247,7 @@ fun NoteItem(
                         text = state.notes[index].title,
                         fontSize = 25.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -253,7 +255,7 @@ fun NoteItem(
                     Text(
                         text = "物品數量: ${state.notes[index].nodeAmount}",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
                 IconButton(onClick = { expanded.value = !expanded.value }) {
@@ -261,7 +263,7 @@ fun NoteItem(
                         imageVector = Icons.Rounded.MoreVert,
                         contentDescription = "More options",
                         modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }
@@ -272,13 +274,13 @@ fun NoteItem(
                     Text(
                         text = "創建日期:${createTime.format(state.notes[index].dateAdded)}",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
 
                     Text(
                         text = "物品敘述:${state.notes[index].description}",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
             }
@@ -291,7 +293,7 @@ fun NoteItem(
                 .fillMaxWidth()
                 .padding(12.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(Color(0xFFFFFEFE)),
             horizontalArrangement = Arrangement.SpaceEvenly
         ){
             IconButton(
@@ -308,7 +310,7 @@ fun NoteItem(
                     imageVector = Icons.Rounded.Edit,
                     contentDescription = "Update Note",
                     modifier = Modifier.size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
             }
 
@@ -326,7 +328,7 @@ fun NoteItem(
                     imageVector = Icons.Rounded.Info,
                     contentDescription = "Info",
                     modifier = Modifier.size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
             }
         }
@@ -342,7 +344,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit,title:Strin
             imageVector = Icons.Rounded.Delete,
             contentDescription = "Delete Note",
             modifier = Modifier.size(35.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            tint = MaterialTheme.colorScheme.primaryContainer
         )
     }
 

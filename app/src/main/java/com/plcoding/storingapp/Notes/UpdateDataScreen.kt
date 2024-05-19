@@ -3,6 +3,7 @@ package com.plcoding.storingapp.Notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +51,7 @@ import com.plcoding.storingapp.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateDataScreen (
     state: NotesState,
@@ -129,76 +132,102 @@ fun UpdateDataScreen (
             }
         }
     ) {paddingValues ->
-        Column (
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = updatedTitle,
-                onValueChange = {
-                    updatedTitle = it
-                    if (it.isNotEmpty()) {
-                        titleEmpty = false
-                    }
-                },
-                textStyle = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 17.sp
-                ),
-                placeholder = {
-                    Text(text = "物品名稱")
-                },
-                isError = titleEmpty,
-            )
-            if (titleEmpty) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 0.dp),
-                    text = "標題不能為空白",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-            if (DuplicateTitle) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 0.dp),
-                    text = "物品標題已重複",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center
-                )
-            }
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = updatedDescription ?: "",
-                onValueChange = {
-                    updatedDescription = it
-                },
-                placeholder = {
-                    Text(text = "物品敘述")
-                }
-            )
-
+                .background(Color(0xFFEBE2D9))
+        ){
             Column (
                 modifier = Modifier
+                    .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                LaunchedEffect(key1 = noteAmount) {
-                    state.nodeAmount.value = noteAmount.toInt()
-                }
-                updateCounter(
-                    updatedNoteAmount = state.nodeAmount
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = updatedTitle,
+                    onValueChange = {
+                        updatedTitle = it
+                        if (it.isNotEmpty()) {
+                            titleEmpty = false
+                        }
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    placeholder = {
+                        Text(text = "物品名稱")
+                    },
+                    isError = titleEmpty,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF), // 背景顏色
+                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                    )
                 )
+                if (titleEmpty) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp),
+                        text = "標題不能為空白",
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                if (DuplicateTitle) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 0.dp),
+                        text = "物品標題已重複",
+                        color = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = updatedDescription ?: "",
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    onValueChange = {
+                        updatedDescription = it
+                    },
+                    placeholder = {
+                        Text(text = "物品敘述")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF), // 背景顏色
+                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
+                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
+                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                    )
+                )
+
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    LaunchedEffect(key1 = noteAmount) {
+                        state.nodeAmount.value = noteAmount.toInt()
+                    }
+                    updateCounter(
+                        updatedNoteAmount = state.nodeAmount
+                    )
+                }
             }
         }
+
     }
 }
 @Composable

@@ -2,6 +2,7 @@ package com.plcoding.storingapp.Cabinets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -92,28 +93,33 @@ fun CabinetScreen(
             }
         }
     ) {paddingValues ->
-
-        LazyColumn(
-            contentPadding = paddingValues,
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+            .background(Color(0xFFEBE2D9))
+        ){
+            LazyColumn(
+                contentPadding = paddingValues,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
-            items(state.cabinets.size) { index ->
-                CabinetItem(
-                    state = state,
-                    index = index,
-                    navController = navController,
-                    onEvent = onEvent,
-                    viewModel= viewModel
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(50.dp))
+                items(state.cabinets.size) { index ->
+                    CabinetItem(
+                        state = state,
+                        index = index,
+                        navController = navController,
+                        onEvent = onEvent,
+                        viewModel= viewModel
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.height(50.dp))
+                }
             }
         }
+
     }
 }
 
@@ -142,7 +148,7 @@ fun CabinetItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color(0xFFFFFEFE))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -157,7 +163,7 @@ fun CabinetItem(
                     imageVector = Icons.Rounded.Inventory2,
                     contentDescription = "Inventory",
                     modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
 
                 Spacer(modifier = Modifier.size(10.dp))
@@ -173,14 +179,14 @@ fun CabinetItem(
                                 imageVector = Icons.Rounded.Bookmark,
                                 contentDescription = "Favorite",
                                 modifier = Modifier.size(25.dp),
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                tint = MaterialTheme.colorScheme.primaryContainer
                             )
                         }
                         Text(
                             text = state.cabinets[index].cabinetName,
                             fontSize = 25.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.secondaryContainer
                         )
 
                     }
@@ -189,7 +195,7 @@ fun CabinetItem(
                     Text(
                         text = "物品種類: ${itemCount.value}",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
 
@@ -199,7 +205,7 @@ fun CabinetItem(
                         contentDescription = "More options",
                         modifier = Modifier
                             .size(30.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
                 IconButton(onClick = { expanded.value = !expanded.value }) {
@@ -207,7 +213,7 @@ fun CabinetItem(
                         imageVector = Icons.Rounded.MoreVert,
                         contentDescription = "More options",
                         modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }
@@ -217,13 +223,13 @@ fun CabinetItem(
                     Text(
                         text = "創建日期:${createTime.format(state.cabinets[index].dateAddedCabinet)}",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
 
                     Text(
                         text = "櫃子物品種類:${ state.cabinets[index].cabinetDescription }",
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
             }
@@ -235,7 +241,7 @@ fun CabinetItem(
                 .fillMaxWidth()
                 .padding(12.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(Color(0xFFFFFEFE)),
             horizontalArrangement = Arrangement.SpaceEvenly
         ){
             IconButton(
@@ -252,7 +258,7 @@ fun CabinetItem(
                     imageVector = Icons.Rounded.Edit,
                     contentDescription = "Update cabinet",
                     modifier = Modifier.size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
             }
 
@@ -268,7 +274,7 @@ fun CabinetItem(
                     imageVector = if(state.cabinets[index].isFavorite)Icons.Rounded.Star else Icons.Rounded.StarBorder,
                     contentDescription = "like Note",
                     modifier = Modifier.size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
             }
 
@@ -287,7 +293,7 @@ fun CabinetItem(
                     imageVector = Icons.Rounded.Info,
                     contentDescription = "Info",
                     modifier = Modifier.size(35.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
             }
 
@@ -306,7 +312,7 @@ fun DeleteButtonWithConfirmationDialog(onDeleteConfirmed: () -> Unit,cabinetName
             imageVector = Icons.Rounded.Delete,
             contentDescription = "Delete Note",
             modifier = Modifier.size(35.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            tint = MaterialTheme.colorScheme.primaryContainer
         )
     }
 
