@@ -88,7 +88,8 @@ class NotesViewModel(
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis(),
                     cabinetId = event.cabinetId,
-                    nodeAmount = state.value.nodeAmount.value
+                    nodeAmount = state.value.nodeAmount.value,
+                    expirationDate = state.value.expirationDate.value
                 )
 
                 viewModelScope.launch {
@@ -127,7 +128,8 @@ class NotesViewModel(
                     description = event.updatedDescription,
                     dateAdded = event.dateAdded,
                     cabinetId = event.cabinetId,
-                    nodeAmount = state.value.nodeAmount.value
+                    nodeAmount = state.value.nodeAmount.value,
+                    expirationDate = event.updatedexpirationDate.toLong()
                 )
                 viewModelScope.launch {
                     noteDoa.updateNote(note)

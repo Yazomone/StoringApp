@@ -137,7 +137,7 @@ class MainActivity : ComponentActivity() {
                                 cabinetId = cabinetId
                             )
                         }
-                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}/{cabinetName}") { backStackEntry ->
+                        composable("UpdateDataScreen/{id}/{title}/{description}/{dateAdded}/{cabinetId}/{noteAmount}/{cabinetName}/{expirationDate}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val title = backStackEntry.arguments?.getString("title") ?: ""
                             val description = backStackEntry.arguments?.getString("description") ?: ""
@@ -145,6 +145,7 @@ class MainActivity : ComponentActivity() {
                             val cabinetId = backStackEntry.arguments?.getString("cabinetId") ?: ""
                             val noteAmount = backStackEntry.arguments?.getString("noteAmount") ?: ""
                             val cabinetName = backStackEntry.arguments?.getString("cabinetName")?:""
+                            val expirationDate = backStackEntry.arguments?.getString("expirationDate")?:""
                             UpdateDataScreen(
                                 state = noteState,
                                 id,
@@ -152,6 +153,7 @@ class MainActivity : ComponentActivity() {
                                 description,
                                 dateAdded,
                                 cabinetId,
+                                expirationDate,
                                 noteAmount = noteAmount,
                                 cabinetName = cabinetName,
                                 navController = navController,

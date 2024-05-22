@@ -1,5 +1,6 @@
 package com.plcoding.storingapp.Notes
 
+import android.app.DatePickerDialog
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -39,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,6 +54,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +74,8 @@ fun AddNoteScreen (
     val isTitleDuplicate by viewModel.isTitleDuplicate.collectAsState()
     val scannedTitle by viewModel.displayText.collectAsState(initial = "")
     var title by remember { mutableStateOf("") }
+    val openDialog = remember { mutableStateOf(false) }
+    val selectedDate =  remember { mutableStateOf("") }
 
     title = scannedTitle
 
@@ -173,12 +185,7 @@ fun AddNoteScreen (
                     },
                     isError = titleEmpty,
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFFFFFFF), // 背景顏色
-                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
-                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
-                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                        containerColor = Color(0xFFFFFFFF)
                     )
 
                 )
@@ -204,6 +211,49 @@ fun AddNoteScreen (
                     )
                 }
 
+
+
+                if (openDialog.value) {
+                    val context = LocalContext.current
+                    val c = Calendar.getInstance()
+                    val year = c.get(Calendar.YEAR)
+                    val month = c.get(Calendar.MONTH)
+                    val day = c.get(Calendar.DAY_OF_MONTH)
+
+                    DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
+                        val selectedDateString = "${year}/${monthOfYear + 1}/${dayOfMonth}"
+                        selectedDate.value = selectedDateString
+                        openDialog.value = false
+                        val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+                        val date = format.parse(selectedDateString)
+                        state.expirationDate.value = date?.time ?: 0L
+                    }, year, month, day).show()
+                }
+
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = selectedDate.value,
+                    onValueChange = { },
+                    readOnly = true,
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    placeholder = {
+                        Text(text = "物品有效期限(選填)")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF)
+                    ),
+                    trailingIcon = {
+                        IconButton(onClick = {  openDialog.value = !openDialog.value  }) {
+                            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Clear text")
+                        }
+                    }
+                )
+
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -220,12 +270,7 @@ fun AddNoteScreen (
                         Text(text = "物品敘述")
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFFFFFFF), // 背景顏色
-                        disabledTextColor = Color.Gray, // 禁用狀態下的文字顏色
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 聚焦時下劃線顏色
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant, // 未聚焦時下劃線顏色
-                        disabledIndicatorColor = Color.Transparent, // 禁用狀態下下劃線顏色
-                        errorIndicatorColor = MaterialTheme.colorScheme.error, // 錯誤狀態下下劃線顏色
+                        containerColor = Color(0xFFFFFFFF)
                     )
                 )
 
@@ -237,6 +282,7 @@ fun AddNoteScreen (
                         nodeAmount = state.nodeAmount
                     )
                 }
+
             }
         }
 

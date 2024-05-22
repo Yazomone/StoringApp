@@ -1,6 +1,7 @@
 package com.plcoding.storingapp.Notes
 
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,6 +54,10 @@ import androidx.navigation.NavController
 import com.plcoding.storingapp.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +68,7 @@ fun UpdateDataScreen (
     description: String,
     dateAdded: String,
     cabinetId:String,
+    expirationDate:String,
     noteAmount:String,
     cabinetName:String,
     navController: NavController,
@@ -71,6 +80,11 @@ fun UpdateDataScreen (
     var DuplicateTitle by remember { mutableStateOf(false) }
     var updatedTitle by remember { mutableStateOf(title) }
     var updatedDescription by remember { mutableStateOf(description) }
+    val openDialog = remember { mutableStateOf(false) }
+    val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    var updatedexpirationDate by remember { mutableStateOf(expirationDate) }
+    val selectedDate =  remember { mutableStateOf(format.format(expirationDate.toLong())) }
+
     Scaffold (
         topBar = {
             Row(
@@ -117,10 +131,11 @@ fun UpdateDataScreen (
                                     updatedDescription,
                                     dateAdded.toLong(),
                                     cabinetId.toInt(),
-                                    state.nodeAmount.value
+                                    state.nodeAmount.value,
+                                    updatedexpirationDate
                                 )
                             )
-                            navController.navigate("NotesScreen/${cabinetId}/${cabinetName}")
+                            navController.navigate("NotesScreen/${cabinetId}/${cabinetName}/${description}")
                         }
                     }
 
@@ -189,11 +204,67 @@ fun UpdateDataScreen (
                         textAlign = TextAlign.Center
                     )
                 }
+
+                if (openDialog.value) {
+                    val context = LocalContext.current
+                    val c = Calendar.getInstance()
+                    val year = c.get(Calendar.YEAR)
+                    val month = c.get(Calendar.MONTH)
+                    val day = c.get(Calendar.DAY_OF_MONTH)
+                    val dpd = DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
+                        val selectedDateString = "${year}/${monthOfYear + 1}/${dayOfMonth}"
+                        updatedexpirationDate = selectedDateString
+                        openDialog.value = false
+                        val date = format.parse(selectedDateString)
+                        updatedexpirationDate = (date?.time ?: 0L).toString()
+                    }, year, month, day)
+                    dpd.setOnCancelListener {
+                        openDialog.value = false
+                    }
+
+                    dpd.show()
+                }
+
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    value = updatedDescription ?: "",
+
+                    value =
+                    if (updatedexpirationDate != "0") {
+                        format.format(updatedexpirationDate.toLong())
+                    }else{
+                        updatedexpirationDate
+                    },
+                    onValueChange = { },
+                    readOnly = true,
+                    textStyle = TextStyle(
+                        fontSize = 17.sp,
+                        color = Color(0xFF383838)
+                    ),
+                    placeholder = {
+                        Text(text = "物品有效期限(選填)")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFFFFFFFF)
+                    ),
+                    trailingIcon = {
+                        Row {
+                            IconButton(onClick = {  openDialog.value = !openDialog.value  }) {
+                                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Clear text")
+                            }
+                            IconButton(onClick = { updatedexpirationDate = "0" }) {
+                                Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear text")
+                            }
+                        }
+                    },
+
+                )
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = updatedDescription,
                     textStyle = TextStyle(
                         fontSize = 17.sp,
                         color = Color(0xFF383838)

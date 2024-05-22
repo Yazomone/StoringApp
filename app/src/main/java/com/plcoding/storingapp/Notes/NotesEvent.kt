@@ -35,7 +35,8 @@ sealed interface NotesEvent {
         val updatedDescription: String,
         val dateAdded: Long,
         val cabinetId: Int,
-        val nodeAmount: Int
+        val nodeAmount: Int,
+        val updatedexpirationDate: String,
     ):NotesEvent
 
 }

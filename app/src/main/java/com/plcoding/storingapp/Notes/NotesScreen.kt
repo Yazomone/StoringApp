@@ -159,7 +159,7 @@ fun NotesScreen(
                     Text(
                         text = "櫃子裡沒東西~~",
                         fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = MaterialTheme.colorScheme.onPrimary,
 
                     )
                 }
@@ -185,6 +185,7 @@ fun NoteItem(
     val noteDescription = rememberSaveable { mutableStateOf("") }
     val dateAdded = rememberSaveable { mutableStateOf("") }
     val noteAmount = rememberSaveable { mutableStateOf(0) }
+    val expirationDate = rememberSaveable { mutableStateOf("") }
 
     val info = remember { mutableStateOf(false) }
     val expanded = remember { mutableStateOf(false) }
@@ -303,7 +304,8 @@ fun NoteItem(
                     noteDescription.value = state.notes[index].description
                     dateAdded.value = state.notes[index].dateAdded.toString()
                     noteAmount.value = state.notes[index].nodeAmount
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}/${noteAmount.value}/${cabinetName}")
+                    expirationDate.value = state.notes[index].expirationDate.toString()
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${cabinetId}/${noteAmount.value}/${cabinetName}/${expirationDate.value}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(

@@ -110,5 +110,5 @@ dependencies {
     //// ACCOMPANIST ////
     val accompanist_version = "0.31.6-rc"
 
-    implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation ("com.google.accompanist:accompanist-permissions:$accompanist_version")
 }

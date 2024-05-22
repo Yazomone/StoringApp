@@ -74,7 +74,12 @@ fun CabinetScreen(
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Back")
                 }
-                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "櫃子總攬",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.weight(1f)
+                )
 
                 IconButton(onClick = {
                     navController.navigate("SearchScreenAtMS")

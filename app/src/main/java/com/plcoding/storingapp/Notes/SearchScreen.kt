@@ -180,7 +180,7 @@ fun SearchItem(
     val noteDescription = rememberSaveable { mutableStateOf("") }
     val dateAdded = rememberSaveable { mutableStateOf("") }
     val noteAmount = rememberSaveable { mutableStateOf(0) }
-
+    val expirationDate = rememberSaveable { mutableStateOf("") }
     val info = remember { mutableStateOf(false) }
     val expanded = remember { mutableStateOf(false) }
     val createTime = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
@@ -272,7 +272,8 @@ fun SearchItem(
                     noteDescription.value = note.description
                     dateAdded.value = note.dateAdded.toString()
                     noteAmount.value = note.nodeAmount
-                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${note.cabinetId}/${noteAmount.value}/${cabinetName}")
+                    expirationDate.value = note.expirationDate.toString()
+                    navController.navigate("UpdateDataScreen/${id.value}/${noteTitle.value}/${noteDescription.value}/${dateAdded.value}/${note.cabinetId}/${noteAmount.value}/${cabinetName}/${expirationDate.value}")
                 },Modifier.padding(8.dp)
             ) {
                 Icon(
